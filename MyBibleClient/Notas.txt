@@ -1,0 +1,3 @@
+El cliente deberá agregar un fichero "serviceClientConfig.properties" en la raiz de los fuentes, con una linea:
+WISH_SERVICE_SERVER=http://<host>:<port>
+indicando la ruta del servidor donde se encuentra el servicio.

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="font_size_array">
+        <item>Plus petite</item>
+        <item>Petite</item>
+        <item>Moyenne</item>
+        <item>Grande</item>
+        <item>Plus grande</item>
+    </string-array>
+
+
+</resources>

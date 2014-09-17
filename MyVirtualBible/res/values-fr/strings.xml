@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ma Bible</string>
+    <string name="action_search">Rechercher</string>
+    <string name="title_activity_show_book">Livre</string>
+    <string name="empty_text"></string>
+    <string name="example_text">exemple</string>
+    <string name="loading">Chargement&#8230;</string>
+    <string name="filtro">Filtrez:</string>
+    <string name="chapter">Chapitre</string>
+    <string name="book_selection_message">Sélectionnez le livre que vous voulez aller:</string>
+    <string name="book_selection_title">Sélectionnez le livre</string>
+    <string name="book_selection_button_text">Sélectionner</string>
+    <string name="download">Télécharger</string>
+    <string name="cancel">Résilier</string>
+    <string name="download_dialog_title">Traductions</string>
+    <string name="download_dialog_text">Choisir la traduction que vous souhaitez télécharger</string>
+    <string name="msg_error_downloading">Erreur lors du téléchargement de cette traduction de la Bible, veuillez réessayer plus tard.</string>
+    <string name="msg_user_message_title">Message à l\'utilisateur</string>
+    <string name="title_activity_preference">Réglages</string>
+    <string name="action_setting">Réglages</string>
+    <string name="lbl_installed">Traductions téléchargés</string>
+    <string name="background_color">Couleur de fond</string>
+    <string name="font_color">Couleur de la police</string>
+    <string name="text_size">Taille de la police</string>
+    <string name="server_name_title">Changer de serveur BBl</string>
+    <string name="server_alias_error">Le serveur [%1$s] n\'existe pas, voulez-vous changer à utiliser Default?</string>
+    <string name="server_alias">Serveur BBl: </string>
+    <string name="default_text">Default</string>
+    <string name="menu_set_as_default">Utilisez cette traduction</string>
+    <string name="menu_delete_traduction">Supprimer cette traduction</string>
+    <string name="deleting">Éliminant&#8230;</string>
+    <string name="downloading">Téléchargement&#8230;</string>
+    <string name="all_languages">Toutes les langues</string>
+    <string name="no_downloads_avaliables">Pas traductions sont disponibles</string>
+    <string name="no_delete_last_translation">Il doit être au moins une traduction disponible</string>
+    <string name="msg_translation_deleted">La traduction a été supprimé</string>
+    <string name="msg_delete_translation_error">La traduction peut pas être supprimé</string>
+    <string name="use_text">Utilisez</string>
+    <string name="action_next">Suivant</string>
+    <string name="action_previous">Précédent</string>
+    <string name="action_add_traslation">Ajouter</string>
+    <string name="action_revert">Définir les valeurs par défaut</string>
+    <string name="lbl_check_use_external_storage">Sauvegarder le traduction sur le SD-Card</string>
+    <string name="use_external_storage_warning">Traductions téléchargés ne seront plus disponible, voulez-vous poursuivre?</string>
+    <string name="no_translations_availables">Il n\'y a pas de traductions téléchargés</string>
+    <string name="no_sd_available_title">SD-Card pas disponible</string>
+    <string name="no_sd_available_message">SD-Card n\'est pas disponible ou ne fonctionne pas</string>
+    <string name="no_sd_available_message_ask">SD-Card pas disponible, voulez-vous d\'utiliser le stockage interne?</string>
+    <string name="message_verse_marked_favorite">Verse %1$s a été marquée comme %2$s</string>
+    <string name="message_verse_unmarked_favorite">Verse %1$s était banalisée</string>
+
+</resources>
