@@ -177,6 +177,13 @@ public class BiblePersonalDatabaseConnector {
 				new String[] { verseMark }, null, null, null, null);
 		return !tCursor.isAfterLast();
 	}
+	
+	public boolean existHighlighterVerses() {
+		Cursor tCursor = database.query("highlighter_verse",
+				new String[] { "highlighter_id" }, null,
+				null, null, null, null, null);
+		return !tCursor.isAfterLast();
+	}
 
 	public void deleteHighlighterVerse(int highlighterId, int book,
 			int chapter, String verseMark) {

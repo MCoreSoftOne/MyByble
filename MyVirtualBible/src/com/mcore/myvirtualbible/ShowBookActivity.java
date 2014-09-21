@@ -44,12 +44,6 @@ import com.mcore.myvirtualbible.util.MyBiblePreferences;
 public class ShowBookActivity extends SherlockActivity implements
 		IVerseSelectionListener {
 
-	private ViewPager mViewPager;
-
-	private List<Book> books;
-
-	private ViewPagerAdapter pagerAdapter;
-
 	private static final int PREF_REQUEST_CODE = 10001;
 	
 	private static final int VERSELIST_REQUEST_CODE = 10002;
@@ -57,7 +51,13 @@ public class ShowBookActivity extends SherlockActivity implements
 	private static final int action_refresh = 10001;
 	
 	private static final int action_test = 10002;
-
+	
+	private ViewPager mViewPager;
+	
+	private List<Book> books;
+	
+	private ViewPagerAdapter pagerAdapter;
+	
 	private BibleTranslation currentTranslation;
 
 	private MyBiblePreferences preferences;
@@ -80,6 +80,7 @@ public class ShowBookActivity extends SherlockActivity implements
 				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		getSelectedBibleVersion();
 		refreshBookList();
+		getSupportActionBar().setHomeButtonEnabled(true);
 		MyBibleLocalServices.getInstance(getApplicationContext());
 
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -215,11 +216,14 @@ public class ShowBookActivity extends SherlockActivity implements
 		if (requestCode == PREF_REQUEST_CODE) {
 			updateByChangeTranslation();
 		}
-		if (requestCode == VERSELIST_REQUEST_CODE && data != null
-				&& resultCode == RESULT_OK) {
-			Serializable extra = data.getSerializableExtra("result");
-			if (extra instanceof HighlighterVerseMark) {
-				gotoVerseMark((HighlighterVerseMark) extra);
+		if (requestCode == VERSELIST_REQUEST_CODE) {
+			if (data != null && resultCode == RESULT_OK) {
+				Serializable extra = data.getSerializableExtra("result");
+				if (extra instanceof HighlighterVerseMark) {
+					gotoVerseMark((HighlighterVerseMark) extra);				
+				}
+			} else {
+				updateByChangeTranslation();
 			}
 		}
 	}
@@ -259,10 +263,8 @@ public class ShowBookActivity extends SherlockActivity implements
 				.getInstance(getApplicationContext());
 		getSupportMenuInflater().inflate(R.menu.menu_show_book, menu);
 		if (menu != null) {
-			List<BibleTranslation> translations = myBibleLocalServices
-					.getInstalledTranslations();
-			for (Iterator iterator = translations.iterator(); iterator
-					.hasNext();) {
+			List<BibleTranslation> translations = myBibleLocalServices.getInstalledTranslations();
+			for (Iterator iterator = translations.iterator(); iterator.hasNext();) {
 				BibleTranslation bibleTranslation = (BibleTranslation) iterator
 						.next();
 				if (currentTranslation == null
@@ -280,6 +282,12 @@ public class ShowBookActivity extends SherlockActivity implements
 					trMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 					trMenu.setEnabled(false);
 				}
+			}
+		}
+		if (myBibleLocalServices != null && !myBibleLocalServices.existHighlighterVerses()) {			
+			MenuItem item = (MenuItem) menu.findItem(R.id.action_saved_verses);
+			if (item != null) {				
+				item.setVisible(false);
 			}
 		}
 		if (CommonConstants.MYBIBLE_DEVELOPER_MODE) {
@@ -301,6 +309,7 @@ public class ShowBookActivity extends SherlockActivity implements
 		case R.id.action_previous:
 			previousPage();
 			return true;
+		case android.R.id.home:
 		case R.id.action_search:
 			openBookChapterDialog();
 			return true;

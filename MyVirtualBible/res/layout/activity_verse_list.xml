@@ -19,4 +19,13 @@
 
     </ListView>
 
+    <TextView
+        android:id="@+id/textNoItems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/no_items_on_verse_list"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="gone" />
+
 </RelativeLayout>

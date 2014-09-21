@@ -373,6 +373,16 @@ public class MyBibleLocalServices implements IMyBibleLocalServices {
 			dbPersonalConnector.close();
 		}
 	}
+	
+	@Override
+	public boolean existHighlighterVerses() {
+		dbPersonalConnector.open();
+		try {
+			return dbPersonalConnector.existHighlighterVerses();
+		} finally {
+			dbPersonalConnector.close();
+		}
+	}
 
 	@Override
 	public List<HighlighterVerse> getHighlighterMarksByBookChapter(

@@ -229,6 +229,7 @@ public class PreferenceActivity extends SherlockActivity {
 					currentTranslation = preferences.getCurrentTranslation();
 					reloadTranslationList();
 					updateServerTextFromPreferences();
+					finish();
 				};
 
 				protected void onCancel() {
@@ -452,8 +453,7 @@ public class PreferenceActivity extends SherlockActivity {
 			if (rowView == null) {
 				LayoutInflater inflater = ((Activity) context)
 						.getLayoutInflater();
-				rowView = inflater.inflate(R.layout.item_translation_on_list,
-						null);
+				rowView = inflater.inflate(R.layout.item_translation_on_list, null);
 				ViewHolder viewHolder = new ViewHolder();
 				viewHolder.translationText = (TextView) rowView
 						.findViewById(R.id.text_translation);

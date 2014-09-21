@@ -50,5 +50,19 @@
     <string name="no_sd_available_message_ask">La tarjeta SD no está disponible, ¿Quiere usar almacenamiento interno?</string>
     <string name="message_verse_marked_favorite">El versículo %1$s ha sido marcado como %2$s</string>
     <string name="message_verse_unmarked_favorite">El versículo %1$s fue desmarcado</string>
+    
+    <string name="action_clear_mark">Limpiar</string> 
+    <string name="action_refresh">Refrescar</string>
+    <string name="action_test">Test 001</string>
+    <string name="maintenance_mode_title">Mantenimiento :(</string>
+    <string name="sorry_maintenance">Lo sentimos! estamos en mantenimiento</string>
+    <string name="maintenance_text">Estamos haciendo algunas actualizaciones en el servidor. Volveremos pronto, gracias por su paciencia</string>
+    <string name="action_close">Cerrar</string>
+    <string name="action_saved_verses">Versículos marcados</string>
+    <string name="sorry_initialization">Lo sentimos! La biblia tiene problemas para inicializarse.</string>
+    <string name="title_activity_verse_list">Lista de versículos</string>
+    <string name="action_filter_order">Filtro/Orden</string>
+    <string name="no_items_on_verse_list">No hay ítems para mostrar</string>
+    <string name="delete_verse_from_list">Eliminar</string>
 
 </resources>

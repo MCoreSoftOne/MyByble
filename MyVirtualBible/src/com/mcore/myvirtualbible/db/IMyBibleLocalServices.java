@@ -41,6 +41,8 @@ public interface IMyBibleLocalServices {
 			Integer highlighterId, Integer bookorder, Integer chapter);
 	
 	public List<HighlighterVerseMark> getAllHighlighterMarks();
+	
+	public boolean existHighlighterVerses();
 
 	public List<HighlighterVerse> getHighlighterMarksByBookChapter(
 			int bookorder, int chapter);

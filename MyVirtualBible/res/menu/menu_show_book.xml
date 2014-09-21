@@ -14,18 +14,18 @@
     </item>
     <item
         android:id="@+id/action_search"
-        android:showAsAction="ifRoom|withText"
+        android:showAsAction="ifRoom"
         android:title="@string/action_search" android:icon="@android:drawable/ic_menu_search">
-    </item>
-    <item
-        android:id="@+id/action_setting"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/action_setting" android:icon="@android:drawable/ic_menu_manage">
     </item>
      <item
         android:id="@+id/action_saved_verses"
-        android:showAsAction="ifRoom|withText"
+        android:showAsAction="ifRoom"
         android:title="@string/action_saved_verses" android:icon="@drawable/ic_menu_list">
+    </item>
+    <item
+        android:id="@+id/action_setting"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_setting" android:icon="@android:drawable/ic_menu_manage">
     </item>
 
 </menu>

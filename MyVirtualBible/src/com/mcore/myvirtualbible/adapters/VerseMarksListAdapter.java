@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,6 +15,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Transformation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mcore.myvirtualbible.R;
@@ -28,11 +30,14 @@ public class VerseMarksListAdapter extends BaseAdapter {
 	protected Context ctx;
 	
 	protected List<Book> books;
+	
+	private ListView parentList;
 
-	public VerseMarksListAdapter(Context ctx, List<HighlighterVerseMark> model, List<Book> books) {
+	public VerseMarksListAdapter(Context ctx, ListView parentList, List<HighlighterVerseMark> model, List<Book> books) {
 		this.model = model;
 		this.ctx = ctx;
 		this.books = books;
+		this.parentList = parentList;
 	}
 	
 	public List<HighlighterVerseMark> getModel() {
@@ -46,10 +51,20 @@ public class VerseMarksListAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
+		return getVerseMark(position);
+	}
+	
+	public HighlighterVerseMark getVerseMark(int position) {
 		if (position >= 0 && position < model.size()) {
 			return model.get(position);
 		}
 		return null;
+	}
+	
+	public void removeVerseMarkFromModel(HighlighterVerseMark mark) {
+		if (model != null && mark != null) {
+			model.remove(mark);
+		}
 	}
 
 	@Override
@@ -86,7 +101,11 @@ public class VerseMarksListAdapter extends BaseAdapter {
 		
 		holder.textTitleMarker.setText(extractVerseTitle(item));
 		holder.textVerseMarker.setText(item.getExtract());
-		
+		if (parentList.isItemChecked(position)) {
+			row.setBackgroundColor(Color.parseColor("#0099CC"));
+		} else {
+			row.setBackgroundColor(Color.TRANSPARENT);
+		}
 		int iconRes;
 		switch (item.getConfig().getId()) {
 		case 1:

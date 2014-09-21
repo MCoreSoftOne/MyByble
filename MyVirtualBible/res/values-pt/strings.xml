@@ -51,4 +51,18 @@
     <string name="message_verse_marked_favorite">O versículo %1$s foi marcado como %2$s</string>
     <string name="message_verse_unmarked_favorite">O versículo %1$s foi desmarcado</string>
 
+    <string name="action_clear_mark">Limpar</string> 
+    <string name="action_refresh">Atualizar</string>
+    <string name="action_test">Test 001</string>
+    <string name="maintenance_mode_title">Manutenção :(</string>
+    <string name="sorry_maintenance">Desculpe! estamos na manutenção</string>
+    <string name="maintenance_text">Estamos fazendo algumas atualizações no servidor. Voltar em breve, obrigado pela sua paciência</string>
+    <string name="action_close">Fechar</string>
+    <string name="action_saved_verses">Versículo marcados</string>
+    <string name="sorry_initialization">Desculpe! A Bíblia tem Inicializar problemas.</string>
+    <string name="title_activity_verse_list">Lista versículo</string>
+    <string name="action_filter_order">Filtro/Order</string>
+    <string name="no_items_on_verse_list">Não há itens a serem exibidos</string>
+    <string name="delete_verse_from_list">Remover</string>
+    
 </resources>

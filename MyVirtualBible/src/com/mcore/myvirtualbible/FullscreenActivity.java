@@ -41,7 +41,6 @@ public class FullscreenActivity extends SherlockActivity {
 
 	private SystemUiHider mSystemUiHider;
 	
-	//This is a Test
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
