@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.mcore.myvirtualbible.adapters.VerseMarksListAdapter;
 import com.mcore.myvirtualbible.db.IMyBibleLocalServices;
 import com.mcore.myvirtualbible.db.MyBibleLocalServices;

@@ -1,5 +1,7 @@
 package com.mcore.myvirtualbible;
 
+import static com.mcore.myvirtualbible.util.MyBibleConstants.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,12 +22,12 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.internal.widget.IcsAdapterView;
 import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.mcore.mybible.common.dto.TranslationDTO;
 import com.mcore.mybible.common.utilities.CommonConstants;
 import com.mcore.myvirtualbible.adapters.ViewPagerAdapter;
 import com.mcore.myvirtualbible.db.IMyBibleLocalServices;
@@ -157,8 +159,9 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 				public void onClick(View v) {
 					DownloadDialog dialog = new DownloadDialog(
 							ShowBookActivity.this) {
-						protected void onOk() {
+						protected void onOk(TranslationDTO data) {
 							updateByChangeTranslation();
+							DownloadDialog.sendDownloadEvent(ShowBookActivity.this, data);
 						};
 
 						protected void onCancel() {
@@ -220,7 +223,8 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 			if (data != null && resultCode == RESULT_OK) {
 				Serializable extra = data.getSerializableExtra("result");
 				if (extra instanceof HighlighterVerseMark) {
-					gotoVerseMark((HighlighterVerseMark) extra);				
+					gotoVerseMark((HighlighterVerseMark) extra);
+					sendEvent(CATEGORY_USES, ACTION_GOTO_VERSE);
 				}
 			} else {
 				updateByChangeTranslation();
@@ -312,6 +316,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 		case android.R.id.home:
 		case R.id.action_search:
 			openBookChapterDialog();
+			sendEvent(CATEGORY_USES, ACTION_SEARCH);
 			return true;
 		case R.id.action_setting:
 			Intent intent = new Intent(this, PreferenceActivity.class);
@@ -339,6 +344,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 				if (bibleTranslation.getId() == item.getItemId()) {
 					preferences.setCurrentTranslation(bibleTranslation.getId());
 					updateByChangeTranslation();
+					sendEvent(CATEGORY_USES, ACTION_USE_TRANS);
 				}
 			}
 			return super.onOptionsItemSelected(item);
@@ -664,12 +670,14 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 			int itemId = item.getItemId();
 			if (itemId == action_unmark) {
 				removeCurrentVerseMark();
+				sendEvent(CATEGORY_USES, ACTION_UNSET_VERSE_MARK);
 			} else if (highlighters != null) {
 				for (Iterator iterator = highlighters.iterator(); iterator
 						.hasNext();) {
 					Highlighter highlighter = (Highlighter) iterator.next();
 					if (itemId == (action_mark + highlighter.getId())) {
 						setCurrentVerseMark(highlighter);
+						sendEvent(CATEGORY_USES, ACTION_SET_VERSE_MARK);						
 					}
 				}
 			}

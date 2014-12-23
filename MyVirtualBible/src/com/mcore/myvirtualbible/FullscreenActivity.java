@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
+import com.mcore.mybible.common.dto.TranslationDTO;
 import com.mcore.mybible.common.utilities.CommonConstants;
 import com.mcore.myvirtualbible.db.MyBibleLocalServices;
 import com.mcore.myvirtualbible.dialog.DownloadDialog;
@@ -138,8 +138,9 @@ public class FullscreenActivity extends BaseGeneralActivity {
 		if (!wasPopulated) {
 			setLoadingMode(true);
 			DownloadDialog dialog = new DownloadDialog(this) {
-				protected void onOk() {
+				protected void onOk(TranslationDTO data) {
 					infoLoaded(0);
+					DownloadDialog.sendDownloadEvent(FullscreenActivity.this, data);
 				};
 				protected void onCancel() {
 					finish();

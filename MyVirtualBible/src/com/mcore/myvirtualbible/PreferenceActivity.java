@@ -1,5 +1,7 @@
 package com.mcore.myvirtualbible;
 
+import static com.mcore.myvirtualbible.util.MyBibleConstants.*;
+
 import java.util.List;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
@@ -31,10 +33,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.internal.widget.IcsAdapterView;
 import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.actionbarsherlock.view.Menu;
+import com.mcore.mybible.common.dto.TranslationDTO;
 import com.mcore.mybible.common.utilities.CommonConstants;
 import com.mcore.myvirtualbible.db.MyBibleLocalServices;
 import com.mcore.myvirtualbible.dialog.DownloadDialog;
@@ -82,7 +84,8 @@ public class PreferenceActivity extends BaseGeneralActivity {
 						R.array.font_size_array_value);
 				if (values != null && position >= 0 && position < values.length) {
 					preferences.setTextSize(values[position]);
-				}				
+					sendEvent(CATEGORY_PREFERENCES, ACTION_FONT_SIZE);
+				}
 			}
 
 			@Override
@@ -102,6 +105,7 @@ public class PreferenceActivity extends BaseGeneralActivity {
 							public void onOk(AmbilWarnaDialog dialog, int color) {
 								fontColor.setValueColor(color);
 								preferences.setTextColor(color);
+								sendEvent(CATEGORY_PREFERENCES, ACTION_COLOR);
 							}
 
 							@Override
@@ -126,6 +130,7 @@ public class PreferenceActivity extends BaseGeneralActivity {
 							public void onOk(AmbilWarnaDialog dialog, int color) {
 								backgroundColor.setValueColor(color);
 								preferences.setBackgroundColor(color);
+								sendEvent(CATEGORY_PREFERENCES, ACTION_COLOR);
 							}
 
 							@Override
@@ -169,6 +174,7 @@ public class PreferenceActivity extends BaseGeneralActivity {
 							.setUseExternalStorage(external);
 					setCurrentBibleTranslation();
 					reloadTranslationList();
+					sendEvent(CATEGORY_PREFERENCES, ACTION_SDCARD);
 					break;
 				case DialogInterface.BUTTON_NEGATIVE:
 					CheckBox chkUseExternalStorage = (CheckBox) findViewById(R.id.chkUseExternalStorage);
@@ -225,10 +231,11 @@ public class PreferenceActivity extends BaseGeneralActivity {
 		switch (item.getItemId()) {
 		case R.id.action_add_translate:
 			DownloadDialog dialog = new DownloadDialog(PreferenceActivity.this) {
-				protected void onOk() {
+				protected void onOk(TranslationDTO data) {
 					currentTranslation = preferences.getCurrentTranslation();
 					reloadTranslationList();
 					updateServerTextFromPreferences();
+					DownloadDialog.sendDownloadEvent(PreferenceActivity.this, data);
 					finish();
 				};
 
@@ -247,6 +254,7 @@ public class PreferenceActivity extends BaseGeneralActivity {
 			preferences.setTextColor(Color.BLACK);
 			preferences.setBackgroundColor(Color.WHITE);
 			setPreferencesValues();
+			sendEvent(CATEGORY_PREFERENCES, ACTION_RESET);
 			return true;
 		default:
 		}
@@ -274,6 +282,7 @@ public class PreferenceActivity extends BaseGeneralActivity {
 				currentTranslation = preferences.getCurrentTranslation();
 				((TranslationListAdapter) listInstalled.getAdapter())
 						.notifyDataSetChanged();
+				sendEvent(CATEGORY_USES, ACTION_USE_TRANS);
 			}
 			return true;
 		case R.id.delete_traduction:
@@ -416,6 +425,7 @@ public class PreferenceActivity extends BaseGeneralActivity {
 				Toast.makeText(PreferenceActivity.this,
 						R.string.msg_translation_deleted, Toast.LENGTH_LONG)
 						.show();
+				sendEvent(CATEGORY_USES, ACTION_DEL_TRANS);
 			} else {
 				Toast.makeText(PreferenceActivity.this,
 						R.string.msg_delete_translation_error,

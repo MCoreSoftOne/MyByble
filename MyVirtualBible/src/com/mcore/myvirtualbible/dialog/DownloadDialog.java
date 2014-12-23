@@ -42,6 +42,7 @@ import com.mcore.mybible.common.utilities.CommonErrorCodes;
 import com.mcore.mybible.common.utilities.CommonUtilities;
 import com.mcore.mybible.services.client.IBusinessDelegate;
 import com.mcore.mybible.services.client.factories.BusinessDelegateFactory;
+import com.mcore.myvirtualbible.BaseGeneralActivity;
 import com.mcore.myvirtualbible.R;
 import com.mcore.myvirtualbible.db.IMyBibleLocalServices;
 import com.mcore.myvirtualbible.db.MyBibleLocalServices;
@@ -151,7 +152,7 @@ public class DownloadDialog extends Dialog {
 							if (isChecked) {
 								List<BibleTranslation> installedTranslations = myBibleLocalServices.getInstalledTranslations();
 								if (installedTranslations != null && installedTranslations.size() > 0) {
-									doOk();
+									doOk(null);
 								}
  							}
 						}
@@ -292,16 +293,23 @@ public class DownloadDialog extends Dialog {
 
 	}
 
-	protected void onOk() {
+	protected void onOk(TranslationDTO data) {
 
 	}
+	
+	public static void sendDownloadEvent(BaseGeneralActivity activity, TranslationDTO data) {
+		if (activity != null && data != null && data.getName() != null) {
+			activity.sendEvent(MyBibleConstants.CATEGORY_DOWNLOAD, MyBibleConstants.ACTION_DOWNLOAD, MyBibleConstants.DOWNLOAD_NAME, data.getName());
+			activity.sendEvent(MyBibleConstants.CATEGORY_DOWNLOAD, MyBibleConstants.ACTION_DOWNLOAD, MyBibleConstants.DOWNLOAD_LANG, data.getLanguage());
+		}
+	}
 
-	protected void doOk() {
+	protected void doOk(TranslationDTO dataT) {
 		try {
 			dismiss();
 		} catch (Exception e) {
 		}
-		onOk();
+		onOk(dataT);
 	}
 
 	private void setLoadingMode(boolean loading) {
@@ -654,6 +662,8 @@ public class DownloadDialog extends Dialog {
 
 	private class DownloadAndLoadTranslationTask extends
 			AsyncTask<TranslationDTO, Integer, Integer> {
+		
+		protected TranslationDTO dataT;
 
 		@Override
 		protected void onPreExecute() {
@@ -665,7 +675,7 @@ public class DownloadDialog extends Dialog {
 		protected Integer doInBackground(TranslationDTO... params) {
 			int result = 0;
 			try {
-				TranslationDTO dataT = params[0];
+				dataT = params[0];
 				String translation = dataT.getId();
 				String translationFilename = translation + ".zip";
 				IBusinessDelegate services = BusinessDelegateFactory
@@ -758,7 +768,7 @@ public class DownloadDialog extends Dialog {
 			working = false;
 			if (result != null && result > 0) {
 				preferences.setCurrentTranslation(result);
-				doOk();
+				doOk(dataT);
 			} else {
 				if (result == -CommonErrorCodes.ERROR_CODE_SERVER_IN_MAINTENANCE_MODE) {					
 					showMaintenanceMessage();
