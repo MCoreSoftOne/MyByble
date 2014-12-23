@@ -41,7 +41,7 @@ import com.mcore.myvirtualbible.model.HighlighterVerseMark;
 import com.mcore.myvirtualbible.util.BibleUtilities;
 import com.mcore.myvirtualbible.util.MyBiblePreferences;
 
-public class ShowBookActivity extends SherlockActivity implements
+public class ShowBookActivity extends BaseGeneralActivity implements
 		IVerseSelectionListener {
 
 	private static final int PREF_REQUEST_CODE = 10001;

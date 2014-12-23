@@ -27,7 +27,7 @@ import com.mcore.myvirtualbible.model.BibleTranslation;
 import com.mcore.myvirtualbible.model.Book;
 import com.mcore.myvirtualbible.model.HighlighterVerseMark;
 
-public class VerseListActivity extends SherlockActivity {
+public class VerseListActivity extends BaseGeneralActivity {
 	
 	private TextView noItemsText;
 	

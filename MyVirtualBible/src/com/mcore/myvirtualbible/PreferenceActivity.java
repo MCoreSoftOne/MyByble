@@ -43,7 +43,7 @@ import com.mcore.myvirtualbible.util.BibleUtilities;
 import com.mcore.myvirtualbible.util.MyBiblePreferences;
 import com.mcore.myvirtualbible.views.ColorOptionsView;
 
-public class PreferenceActivity extends SherlockActivity {
+public class PreferenceActivity extends BaseGeneralActivity {
 
 	private int currentTranslation;
 

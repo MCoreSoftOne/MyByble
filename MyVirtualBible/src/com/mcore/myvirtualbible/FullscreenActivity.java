@@ -29,7 +29,7 @@ import com.mcore.myvirtualbible.util.SystemUiHider;
  * 
  * @see SystemUiHider
  */
-public class FullscreenActivity extends SherlockActivity {
+public class FullscreenActivity extends BaseGeneralActivity {
 
 	private static final boolean AUTO_HIDE = true;
 
