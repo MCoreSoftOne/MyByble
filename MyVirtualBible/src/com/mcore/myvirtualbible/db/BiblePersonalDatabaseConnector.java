@@ -18,7 +18,7 @@ public class BiblePersonalDatabaseConnector {
 
 	private static final String PERSONAL_DB_NAME = "PersonalData.db";
 
-	private static final int CURRENT_PERSONAL_DATABASE_VERSION = 1;
+	private static final int CURRENT_PERSONAL_DATABASE_VERSION = 2;
 
 	private BiblePersonalDatabaseHelper dbPersonalOpenHelper;
 

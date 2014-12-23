@@ -25,7 +25,7 @@ public class BiblePersonalDatabaseHelper extends SQLiteOpenHelper {
 
 	public void createTables(SQLiteDatabase db) {
 		Log.d(BIBLE_DB_TAG, "CREATING DATABASE --------");
-        db.execSQL("CREATE TABLE highlighter_config (id INTEGER PRIMARY KEY autoincrement, name TEXT, color NUMERIC, data TEXT, note TEXT);");
+        db.execSQL("CREATE TABLE highlighter_config (id INTEGER PRIMARY KEY autoincrement, name TEXT, color NUMERIC, data TEXT, note TEXT, external_id TEXT, color_options NUMERIC);");
         db.execSQL("CREATE TABLE highlighter_verse (highlighter_id NUMERIC, book NUMERIC, chapter NUMERIC, verse_mark TEXT, verse_range_low NUMERIC, verse_range_high NUMERIC, extract TEXT, note TEXT)");
         populateHighlighter(db);
 	}
@@ -47,7 +47,22 @@ public class BiblePersonalDatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
+		Log.d(BIBLE_DB_TAG, "UPDATING (P.DB) " + oldVersion + " to " + newVersion);
+		if (oldVersion < 2) {
+			try {
+				db.execSQL("ALTER TABLE highlighter_config ADD COLUMN external_id TEXT;");
+				db.execSQL("ALTER TABLE highlighter_config ADD COLUMN color_options TEXT;");
+			} catch (Exception e) {
+				recreateAllDataBase(db);
+			}
+		}
+	}
+	
+	private void recreateAllDataBase(SQLiteDatabase db) {
+		Log.d(BIBLE_DB_TAG, "RECREATING PERSONAL DATABASE ");
+		db.execSQL("DROP TABLE IF EXISTS highlighter_config");
+		db.execSQL("DROP TABLE IF EXISTS highlighter_verse");
+		createTables(db);
 	}
 	
 }
