@@ -1,5 +1,8 @@
 package com.mcore.myvirtualbible.adapters;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -7,6 +10,8 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaScannerConnection;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -19,6 +24,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.mcore.mybible.common.utilities.CommonConstants;
 import com.mcore.myvirtualbible.R;
 import com.mcore.myvirtualbible.db.IMyBibleLocalServices;
 import com.mcore.myvirtualbible.db.MyBibleLocalServices;
@@ -236,10 +242,12 @@ public class ViewPagerAdapter extends PagerAdapter {
 						+ intToHexColor(preferences.getBackgroundColor()));
 		params.put("highlighterMap", highlighterMap);
 		params.put("highlighters", instance.getHighlighters());
+		String converData = instance.getBookChapterText(
+				biblePosition.getBook().getId(),
+				biblePosition.getChapter());
+		saveToDeveloperFile(biblePosition.getBook().getName() + "_" + biblePosition.getChapter() + ".xml", converData);
 		String toHTML = BibleHtmlTransform.getInstance().convert(
-				instance.getBookChapterText(
-						biblePosition.getBook().getId(),
-						biblePosition.getChapter()), params);
+				converData, params);
 		// String toHTML =
 		// XmlTransform.transformChapterToHTML(ctx,MyBibleLocalServices.getInstance(ctx).getBookChapterText(biblePosition.getBook().getId(),
 		// biblePosition.getChapter()),params);
@@ -253,22 +261,23 @@ public class ViewPagerAdapter extends PagerAdapter {
 				                         + sourceID);
 				  }
 				});
-
-		/*
+		saveToDeveloperFile(biblePosition.getBook().getName() + "_" + biblePosition.getChapter() + ".html", toHTML);
+	}
+	
+	private void saveToDeveloperFile(String fileName, String fileContent) {
 		if (CommonConstants.MYBIBLE_DEVELOPER_MODE) {			
 			try {
-				File myFile = new File("/sdcard/mysdfile1_" + biblePosition.getChapter() + ".html");
+				File myFile = new File(Environment.getExternalStorageDirectory().getPath() + "/mybible/mybbl_" + fileName);
 				myFile.createNewFile();
 				FileOutputStream fOut = new FileOutputStream(myFile);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fOut);
-				outputStreamWriter.write(toHTML);
+				outputStreamWriter.write(fileContent);
 				outputStreamWriter.close();
-				
+				MediaScannerConnection.scanFile(ctx, new String[] { myFile.getAbsolutePath() }, null, null);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} */
-		 
+		} 
 	}
 	
 	private String intToHexColor(int intColor) {

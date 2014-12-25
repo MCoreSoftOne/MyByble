@@ -2,6 +2,7 @@ package com.mcore.myvirtualbible.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ public class BibleHtmlTransform {
 			input.getDocumentElement().normalize();
 			Element body = createBody(output, parameters);
 			copyData(output, body, input.getFirstChild(), parameters);
+			//fillHoles(body, null);
 			output.getDocumentElement().normalize();
 			TransformerFactory transformerFactory = TransformerFactory
 					.newInstance();
@@ -60,6 +62,68 @@ public class BibleHtmlTransform {
 			return resultStr.toString();
 		} catch (Exception e) {
 			return "<h3>error</h3>";
+		}
+	}
+	
+	private class ContainerVerseNode {
+		Element lastVerseNode;
+		Node lastCloneNode;
+	}
+	
+	private boolean fillHoles(Element rootIn, ContainerVerseNode containerVerseNode) {
+		containerVerseNode = containerVerseNode != null? containerVerseNode : new ContainerVerseNode();
+		boolean result = false;
+		for (int i = 0; i < rootIn.getChildNodes().getLength(); i++) {
+			Node item = rootIn.getChildNodes().item(i);
+			if (item.getNodeType() != Node.ELEMENT_NODE ) {
+				if (!result && containerVerseNode.lastVerseNode != null) {
+					if (containerVerseNode.lastCloneNode == null) {
+						containerVerseNode.lastCloneNode = containerVerseNode.lastVerseNode.cloneNode(false);
+						item.getParentNode().insertBefore(containerVerseNode.lastCloneNode, item);
+					} else {
+						i--;
+					}
+					item.getParentNode().removeChild(item);
+					containerVerseNode.lastCloneNode.appendChild(item);
+				}
+			} else if (item.getNodeType() == Node.ELEMENT_NODE && item.getNodeName() != null) {
+				if (item.getNodeName().equals("a")) {
+					containerVerseNode.lastVerseNode = (Element)item;
+					containerVerseNode.lastCloneNode = null;
+					result = true;
+				} else {
+					if (item.getNodeName().equals("end_data")) {
+						return result;
+					}
+					result = fillHoles((Element)item, containerVerseNode);
+					if (!result && containerVerseNode.lastVerseNode != null) {
+						if (containerVerseNode.lastCloneNode == null) {
+							containerVerseNode.lastCloneNode = containerVerseNode.lastVerseNode.cloneNode(false);
+							item.getParentNode().insertBefore(containerVerseNode.lastCloneNode, item);
+						} else {
+							i--;
+						}
+						item.getParentNode().removeChild(item);
+						containerVerseNode.lastCloneNode.appendChild(item);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	protected String nodeToStr(Node node) {
+		try {			
+			TransformerFactory transFactory = TransformerFactory.newInstance();
+			Transformer transformer = transFactory.newTransformer();
+			StringWriter buffer = new StringWriter();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			transformer.transform(new DOMSource(node),
+					new StreamResult(buffer));
+			return buffer.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -189,6 +253,7 @@ public class BibleHtmlTransform {
 		}
 		if (item.getNodeName() != null
 				&& item.getNodeName().equals("copyright")) {
+			parent.appendChild(document.createElement("end_data"));
 			parent.appendChild(document.createElement("p"));
 			parent.appendChild(document.createElement("p"));
 			parent.appendChild(document.createElement("p"));

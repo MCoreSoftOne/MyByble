@@ -2,6 +2,8 @@ package com.mcore.myvirtualbible.util;
 
 public class MyBibleConstants {
 	
+	public static final boolean MYBIBLE_DEVELOPER_MODE_FULL_DOWNLOAD = false;
+	
 	public static final String EXTERNAL_DB_DIR = "/mybible/";
 	
 	public static final String PREF_LAST_BIBLE_POSITION = "lastPosition";
@@ -30,5 +32,6 @@ public class MyBibleConstants {
 	public static final String ACTION_UNSET_VERSE_MARK = "MYBIBLE.USE.UNSET_VERSE_MARK";
 	public static final String DOWNLOAD_NAME = "NAME";
 	public static final String DOWNLOAD_LANG = "LANG";
+	
 
 }

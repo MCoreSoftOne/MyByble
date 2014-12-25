@@ -102,8 +102,13 @@ public class DownloadDialog extends Dialog {
 						.getSelectedItem();
 				if (selectedItem != null) {
 					setLoadingMode(true);
-					new DownloadAndLoadTranslationTask()
-							.execute(new TranslationDTO[] { selectedItem });
+					if (CommonConstants.MYBIBLE_DEVELOPER_MODE && MyBibleConstants.MYBIBLE_DEVELOPER_MODE_FULL_DOWNLOAD) {
+						new DownloadAndLoadTranslationTask()
+						.execute(translations.getTranslations());
+					} else {						
+						new DownloadAndLoadTranslationTask()
+						.execute(new TranslationDTO[] { selectedItem });
+					}
 				}
 			}
 		});
@@ -675,77 +680,79 @@ public class DownloadDialog extends Dialog {
 		protected Integer doInBackground(TranslationDTO... params) {
 			int result = 0;
 			try {
-				dataT = params[0];
-				String translation = dataT.getId();
-				String translationFilename = translation + ".zip";
-				IBusinessDelegate services = BusinessDelegateFactory
-						.getNewServiceClient(BibleUtilities
-								.getConnContext(getContext()
-										.getApplicationContext()));
-				LoginOutDTO doLogin = doLogin(services);
-				if (doLogin == null) {
-					return 0;
-				}
-				if (doLogin.getResultID() != CommonErrorCodes.ERROR_CODE_NO_ERROR) {
-					return -doLogin.getResultID();
-				}
-				FileOutputStream dataOut;
-				boolean isSDCard = myBibleLocalServices.getUseExternalStorage();
-				if (isSDCard) {
-					translationFilename = Environment
-							.getExternalStorageDirectory()
-							+ MyBibleConstants.EXTERNAL_DB_DIR
-							+ translationFilename;
-					dataOut = new FileOutputStream(translationFilename);
-				} else {
-					dataOut = getContext().openFileOutput(
-							translationFilename, Context.MODE_PRIVATE);
-				}
-				try {
-					ResultInfoDTO dataResult = null;
-					try {
-						dataResult = services
-								.getBibleData(translation, dataOut);
-					} finally {
-						dataOut.close();
-					}
-					if (dataResult == null
-							|| dataResult.getResultID() != CommonErrorCodes.ERROR_CODE_NO_ERROR) {
-						throw new RuntimeException("Server error !");
-					}
-					publishProgress(1);
-					String md5FromStream = null;
-					FileInputStream dataTest;
-					if (isSDCard) {
-						dataTest = new FileInputStream(translationFilename);
-					} else {
-						dataTest = getContext().openFileInput(
-								translationFilename);
-					}
-					try {
-						md5FromStream = CommonUtilities
-								.getMD5FromStream(dataTest);
-					} finally {
-						dataTest.close();
-					}
-					if (md5FromStream != null
-							&& md5FromStream.equalsIgnoreCase(dataT.getMd5())) {
-						if (dataResult != null
-								&& dataResult.getResultID() == CommonErrorCodes.ERROR_CODE_NO_ERROR) {
-							result = MyBibleLocalServices.getInstance(
-									getContext().getApplicationContext())
-									.addTranslationToDataBase(
-											translationFilename);
-						}
-					} else {
+				for (int i = 0; i < params.length; i++) {
+					dataT = params[i];
+					String translation = dataT.getId();
+					String translationFilename = translation + ".zip";
+					IBusinessDelegate services = BusinessDelegateFactory
+							.getNewServiceClient(BibleUtilities
+									.getConnContext(getContext()
+											.getApplicationContext()));
+					LoginOutDTO doLogin = doLogin(services);
+					if (doLogin == null) {
 						return 0;
 					}
-
-				} finally {
+					if (doLogin.getResultID() != CommonErrorCodes.ERROR_CODE_NO_ERROR) {
+						return -doLogin.getResultID();
+					}
+					FileOutputStream dataOut;
+					boolean isSDCard = myBibleLocalServices.getUseExternalStorage();
 					if (isSDCard) {
-						new File(translationFilename).delete();
+						translationFilename = Environment
+								.getExternalStorageDirectory()
+								+ MyBibleConstants.EXTERNAL_DB_DIR
+								+ translationFilename;
+						dataOut = new FileOutputStream(translationFilename);
 					} else {
-						getContext().deleteFile(translationFilename);
+						dataOut = getContext().openFileOutput(
+								translationFilename, Context.MODE_PRIVATE);
+					}
+					try {
+						ResultInfoDTO dataResult = null;
+						try {
+							dataResult = services
+									.getBibleData(translation, dataOut);
+						} finally {
+							dataOut.close();
+						}
+						if (dataResult == null
+								|| dataResult.getResultID() != CommonErrorCodes.ERROR_CODE_NO_ERROR) {
+							throw new RuntimeException("Server error !");
+						}
+						publishProgress(1);
+						String md5FromStream = null;
+						FileInputStream dataTest;
+						if (isSDCard) {
+							dataTest = new FileInputStream(translationFilename);
+						} else {
+							dataTest = getContext().openFileInput(
+									translationFilename);
+						}
+						try {
+							md5FromStream = CommonUtilities
+									.getMD5FromStream(dataTest);
+						} finally {
+							dataTest.close();
+						}
+						if (md5FromStream != null
+								&& md5FromStream.equalsIgnoreCase(dataT.getMd5())) {
+							if (dataResult != null
+									&& dataResult.getResultID() == CommonErrorCodes.ERROR_CODE_NO_ERROR) {
+								result = MyBibleLocalServices.getInstance(
+										getContext().getApplicationContext())
+										.addTranslationToDataBase(
+												translationFilename);
+							}
+						} else {
+							return 0;
+						}
+						
+					} finally {
+						if (isSDCard) {
+							new File(translationFilename).delete();
+						} else {
+							getContext().deleteFile(translationFilename);
+						}
 					}
 				}
 			} catch (Exception e) {

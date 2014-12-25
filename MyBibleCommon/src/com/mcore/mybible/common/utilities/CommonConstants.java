@@ -10,7 +10,7 @@ package com.mcore.mybible.common.utilities;
  */
 public class CommonConstants {
 	
-	public static final boolean MYBIBLE_DEVELOPER_MODE = false;
+	public static final boolean MYBIBLE_DEVELOPER_MODE = true;
 
 	public static final String BUNDLE_RESOURCE_NAME = "mybible";
 
