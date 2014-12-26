@@ -60,6 +60,16 @@ function _internalSetClassName(id, className) {
 	if (element) {
 		if (!(typeof element === "undefined")) {
 			element.className = className;
+			if (element.hasChildNodes()) {
+				var children = element.childNodes;
+				if (children) {
+					for (var i = 0; i < children.length; i++) {
+						if (children[i] && children[i].nodeType == 1) {
+							children[i].className = className;
+						}
+					}
+				}
+			}
 			return true;
 		}
 	}

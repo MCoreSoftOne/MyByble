@@ -93,7 +93,7 @@ public class BibleHtmlTransform {
 						return result;
 					}
 					result = hasInternalVerseElements((Element)item);
-					if (!result && containerVerseNode.lastVerseNode != null) {
+					if (!result && containerVerseNode.lastVerseNode != null && !item.getNodeName().equalsIgnoreCase("p")) {
 						if (addToNewVerseNode(item, containerVerseNode)) {
 							i--;
 						}
@@ -135,12 +135,21 @@ public class BibleHtmlTransform {
 		return false;
 	}
 	
+	protected boolean excludeNodeByTagName(String tag) {
+		return tag == null || tag.equalsIgnoreCase("title") || tag.startsWith("h") || tag.startsWith("H");
+	}
+	
 	protected boolean addToNewVerseNode(Node item, ContainerVerseNode containerVerseNode) {
 		if (item.getNodeType() == Node.TEXT_NODE) {
 			String value = item.getNodeValue();
 			if (value != null && value.replaceAll("\n", "").replaceAll("\t", "").replaceAll("\r", "").trim().length() == 0) {
 				return false;
 			}
+		}
+		if (item.getNodeType() == Node.ELEMENT_NODE) {
+			if (excludeNodeByTagName(item.getNodeName())) {
+				return false;
+			}			
 		}
 		boolean result = false;
 		if (containerVerseNode.lastCloneNode != null && containerVerseNode.lastCloneNode.getParentNode() == item.getParentNode()) {
@@ -149,7 +158,6 @@ public class BibleHtmlTransform {
 			containerVerseNode.lastCloneNode = containerVerseNode.lastVerseNode.cloneNode(false);
 			
 			Node attr = containerVerseNode.lastCloneNode.getAttributes().getNamedItem("id");
-			String orgName = attr.getNodeValue();
 			String newValue = attr.getNodeValue() + "_" + ++containerVerseNode.counter;
 			attr.setNodeValue(newValue);
 			attr = containerVerseNode.lastCloneNode.getAttributes().getNamedItem("name");

@@ -30,7 +30,7 @@ public class Test01 extends AndroidTestCase {
 		params.put("highlighterMap", new HashMap());
 		params.put("highlighters", new ArrayList());
 		String converted = BibleHtmlTransform.getInstance().convert(
-				readFile("mybbl_Isaías_25.xml"), params);
+				readFile("mybbl_Génesis_1.xml"), params);
 		saveToDeveloperFile("converted.txt", converted);
 		System.err.println("*********************************************");
 	}
