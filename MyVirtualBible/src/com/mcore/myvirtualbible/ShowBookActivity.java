@@ -1,6 +1,11 @@
 package com.mcore.myvirtualbible;
 
-import static com.mcore.myvirtualbible.util.MyBibleConstants.*;
+import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_GOTO_VERSE;
+import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_SEARCH;
+import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_SET_VERSE_MARK;
+import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_UNSET_VERSE_MARK;
+import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_USE_TRANS;
+import static com.mcore.myvirtualbible.util.MyBibleConstants.CATEGORY_USES;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -190,6 +195,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 		}
 		mMode = null;
 		lastModeWasClicked = false;
+		selectedVerses.clear();
 	}
 
 	private void updateChapterPosition() {
@@ -351,21 +357,20 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 	}
 
 	@Override
-	public void setSelectedVerse(String verse, String text) {
+	public void selectVerse(String verse, String text) {
 		if (verse == null) {
-			selectedVerses.clear();
-			if (mMode != null) {
-				mMode.finish();
-				mMode = null;
-			}
+			finishContextMenu();
 			return;
 		}
-		SelectedVerse verseData = new SelectedVerse();
-		verseData.text = text;
-		verseData.id = verse;
-		selectedVerses.add(verseData);
+		SelectedVerse selected = findVerseOnSelected(verse);
+		if (selected == null) {			
+			SelectedVerse verseData = new SelectedVerse();
+			verseData.text = text;
+			verseData.id = verse;
+			selectedVerses.add(verseData);
+		}
 		if (mMode == null) {			
-			mMode = startActionMode(new FavoriteMarksActionMode(isCurrentMarked(),
+			mMode = startActionMode(new FavoriteMarksActionMode(isVersetMarked(verse),
 					MyBibleLocalServices.getInstance(getApplicationContext())
 					.getHighlighters()));
 			lastModeWasClicked = false;
@@ -382,10 +387,34 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 			}
 		}
 	}
+	
+	@Override
+	public void unSelectVerse(String verse) {
+		SelectedVerse unselected = findVerseOnSelected(verse);
+		if (unselected != null) {
+			selectedVerses.remove(unselected);
+			if (selectedVerses.size() == 0) {
+				finishContextMenu();
+			}
+		}
+	}
+	
+	private void finishContextMenu() {
+		cleanSelection();
+	}
+	
+	private SelectedVerse findVerseOnSelected(String verse) {
+		for (Iterator iterator = selectedVerses.iterator(); iterator.hasNext();) {
+			SelectedVerse item = (SelectedVerse) iterator.next();
+			if (item != null && item.id != null && item.id.equals(verse)) {
+				return item;
+			}
+		}
+		return null;
+	}
 
-	private boolean isCurrentMarked() {
-		/* TODO
-		if (currentVerse != null) {
+	private boolean isVersetMarked(String verse) {
+		if (verse != null) {
 			IMyBibleLocalServices instance = MyBibleLocalServices
 					.getInstance(getApplicationContext());
 			BiblePosition biblePosition = pagerAdapter
@@ -401,13 +430,13 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 					if (highlighterVerse != null
 							&& highlighterVerse.getVerseMark() != null
 							&& highlighterVerse.getVerseMark().equals(
-									currentVerse)) {
+									verse)) {
 						return true;
 					}
 
 				}
 			}
-		}*/
+		}
 		return false;
 	}
 
@@ -506,6 +535,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 
 	private void removeCurrentVerseMark() {
 		if (selectedVerses.size() > 0) {
+			boolean modified = false;
 			for (Iterator iterator = selectedVerses.iterator(); iterator.hasNext();) {
 				SelectedVerse selectedVerse = (SelectedVerse) iterator.next();
 				String currentVerse = selectedVerse.id;
@@ -523,18 +553,13 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 							currentVerse);
 					Integer[] verseInformation = BibleUtilities
 							.getVerseInformation(currentVerse);
-					String verseNum = currentVerse.replaceAll("verse", "");
-					if (verseInformation != null && verseInformation.length > 0) {
-						verseNum = String.valueOf(verseInformation[0]);
-						if (verseInformation.length > 1 && verseInformation[1] > 0
-								&& verseInformation[1] != verseInformation[0]) {
-							verseNum += " - " + verseInformation[1];
-						}
-					}
-					String message = getResources().getString(
-							R.string.message_verse_unmarked_favorite, verseNum);
-					Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+					modified = true;
 				}
+			}
+			if (modified) {				
+				String message = getResources().getString(
+						R.string.message_verse_unmarked_favorite, "");
+				Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -587,13 +612,6 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 								pagerAdapter.markVerse(pagerAdapter
 										.getViewByPosition(mViewPager, position),
 										highlighter, currentVerse);
-								String verseNum = String.valueOf(mark
-										.getVerseRangeLow());
-								if (mark.getVerseRangeHigh() > 0
-										&& mark.getVerseRangeHigh() != mark
-										.getVerseRangeLow()) {
-									verseNum += " - " + mark.getVerseRangeHigh();
-								}
 								modified = true;
 							}
 						}

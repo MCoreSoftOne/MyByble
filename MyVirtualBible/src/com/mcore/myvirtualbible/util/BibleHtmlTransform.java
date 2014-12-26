@@ -154,9 +154,7 @@ public class BibleHtmlTransform {
 			attr.setNodeValue(newValue);
 			attr = containerVerseNode.lastCloneNode.getAttributes().getNamedItem("name");
 			attr.setNodeValue(newValue);
-			attr = containerVerseNode.lastCloneNode.getAttributes().getNamedItem("onclick");
-			attr.setNodeValue(attr.getNodeValue().replaceAll("this", "document.getElementById('"+orgName+"')"));
-			
+						
 			item.getParentNode().insertBefore(containerVerseNode.lastCloneNode, item);
 		}
 		item.getParentNode().removeChild(item);
@@ -253,7 +251,7 @@ public class BibleHtmlTransform {
 						String verseStr = "verse" + verseNum;
 						verseNode.setAttribute("id", verseStr);
 						verseNode.setAttribute("name", verseStr);
-						verseNode.setAttribute("onclick", "selectText(event,this)");
+						verseNode.setAttribute("onclick", "selectText(event,'"+verseStr+"')");
 						if (parameters != null) {
 							Map versemap = (Map) parameters.get("highlighterMap");
 							if (versemap != null) {

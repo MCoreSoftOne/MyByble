@@ -1,24 +1,28 @@
 var memdata = [];
-function selectText(event, containerobj) {
+function selectText(event, dataId) {
+	var containerobj = null;
+	if (dataId) {
+		containerobj = document.getElementById(dataId);
+	}
 	if (containerobj == null) {
-		mybibleinternal.setSelectedVerse(null, null);
+		mybibleinternal.selectVerse(null, null);
 	} else {
-		var dataId = containerobj.id;
 		var cverse = findObjectInMem(dataId);
 		if (cverse) {
 			internalSetClassName(dataId, cverse.lastclass);
 			removeObjectInMem(memdata, cverse);
+			mybibleinternal.unSelectVerse(containerobj.name);
 		} else {
 			var versec = {};
 			versec.id = dataId;
 			versec.lastclass = containerobj.className;
 			memdata.push(versec);
 			internalSetClassName(dataId, "markbbl");
-			mybibleinternal.setSelectedVerse(containerobj.name, 
+			mybibleinternal.selectVerse(containerobj.name, 
 					containerobj.innerHTML.replace("/\&lt;br\&gt;/gi","\n").replace("/(&lt;([^&gt;]+)&gt;)/gi", ""));
-			if (event) {				
-				event.stopPropagation();
-			}
+		}
+		if (event) {				
+			event.stopPropagation();
 		}
 	}
 }
@@ -64,6 +68,8 @@ function _internalSetClassName(id, className) {
 
 function markVerse(verse, classverse) {
 	internalSetClassName(verse, classverse);
+	var cverse = findObjectInMem(verse);
+	removeObjectInMem(memdata, cverse);
 }
 
 function cleanSelection() {

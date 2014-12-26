@@ -329,12 +329,25 @@ public class ViewPagerAdapter extends PagerAdapter {
 		}
 
 		@JavascriptInterface
-		public void setSelectedVerse(final String verse, final String text) {
+		public void selectVerse(final String verse, final String text) {
 			if (listener != null) {
 				myHandler.post(new Runnable() {
 					@Override
 					public void run() {
-						listener.setSelectedVerse(verse, text);
+						listener.selectVerse(verse, text);
+					}
+				});
+			}
+
+		}
+		
+		@JavascriptInterface
+		public void unSelectVerse(final String verse) {
+			if (listener != null) {
+				myHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						listener.unSelectVerse(verse);
 					}
 				});
 			}
