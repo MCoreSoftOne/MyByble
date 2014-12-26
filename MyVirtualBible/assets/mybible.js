@@ -1,20 +1,19 @@
-var lastco = null;
-var lastclass = "";
+var memdata = [];
 function selectText(event, containerobj) {
-	if (lastco != null) {
-		lastco.className = lastclass;
-	}
 	if (containerobj == null) {
-		lastco = null;
 		mybibleinternal.setSelectedVerse(null, null);
 	} else {
-		if (lastco == containerobj) {
-			lastco.className = lastclass;
-			lastco = null;
+		var dataId = containerobj.id;
+		var cverse = findObjectInMem(dataId);
+		if (cverse) {
+			internalSetClassName(dataId, cverse.lastclass);
+			removeObjectInMem(memdata, cverse);
 		} else {
-			lastco = containerobj;
-			lastclass = containerobj.className;
-			containerobj.className = "markbbl";
+			var versec = {};
+			versec.id = dataId;
+			versec.lastclass = containerobj.className;
+			memdata.push(versec);
+			internalSetClassName(dataId, "markbbl");
 			mybibleinternal.setSelectedVerse(containerobj.name, 
 					containerobj.innerHTML.replace("/\&lt;br\&gt;/gi","\n").replace("/(&lt;([^&gt;]+)&gt;)/gi", ""));
 			if (event) {				
@@ -24,19 +23,56 @@ function selectText(event, containerobj) {
 	}
 }
 
-function markVerse(verse, classverse) {
-	verseelem = document.getElementById(verse);
-	if (verseelem) {
-		if (verseelem == lastco) {
-			lastclass = classverse;
+function removeObjectInMem(arr, item) {
+	 for(var i = arr.length; i--;) {
+          if(arr[i] === item) {
+              arr.splice(i, 1);
+          }
+      }
+}
+
+function findObjectInMem(id) {
+	for (var i = 0; i < memdata.length; i++) {
+	    if (memdata[i]) {
+	    	if (memdata[i].id == id) {
+	    		return memdata[i];
+	    	}
+	    }
+	}
+	return null;
+}
+
+function internalSetClassName(id, className) {
+	if (_internalSetClassName(id, className)) {
+		var i = 0;
+		while (_internalSetClassName(id + "_" + ++i, className)) {
+			//Do
 		}
-		verseelem.className = classverse;
 	}
 }
 
-function cleanSelection() {
-	if (lastco != null) {
-		lastco.className = lastclass;
+function _internalSetClassName(id, className) {
+	var element = document.getElementById(id);
+	if (element) {
+		if (!(typeof element === "undefined")) {
+			element.className = className;
+			return true;
+		}
 	}
-	lastco = null;
+	return false;
+}
+
+function markVerse(verse, classverse) {
+	internalSetClassName(verse, classverse);
+}
+
+function cleanSelection() {
+	for (var i = 0; i < memdata.length; i++) {
+	    if (memdata[i]) {
+	    	if (memdata[i].id) {
+	    		internalSetClassName(memdata[i].id, memdata[i].lastclass);
+	    	}
+	    }
+	}
+	memdata = [];
 }

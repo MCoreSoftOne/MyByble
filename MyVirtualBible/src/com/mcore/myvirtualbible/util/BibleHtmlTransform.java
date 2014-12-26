@@ -46,7 +46,7 @@ public class BibleHtmlTransform {
 			input.getDocumentElement().normalize();
 			Element body = createBody(output, parameters);
 			copyData(output, body, input.getFirstChild(), parameters);
-			//fillHoles(body, null);
+			fillHoles(body, null);
 			output.getDocumentElement().normalize();
 			TransformerFactory transformerFactory = TransformerFactory
 					.newInstance();
@@ -68,6 +68,7 @@ public class BibleHtmlTransform {
 	private class ContainerVerseNode {
 		Element lastVerseNode;
 		Node lastCloneNode;
+		int counter;
 	}
 	
 	private boolean fillHoles(Element rootIn, ContainerVerseNode containerVerseNode) {
@@ -77,38 +78,89 @@ public class BibleHtmlTransform {
 			Node item = rootIn.getChildNodes().item(i);
 			if (item.getNodeType() != Node.ELEMENT_NODE ) {
 				if (!result && containerVerseNode.lastVerseNode != null) {
-					if (containerVerseNode.lastCloneNode == null) {
-						containerVerseNode.lastCloneNode = containerVerseNode.lastVerseNode.cloneNode(false);
-						item.getParentNode().insertBefore(containerVerseNode.lastCloneNode, item);
-					} else {
+					if (addToNewVerseNode(item, containerVerseNode)) {
 						i--;
 					}
-					item.getParentNode().removeChild(item);
-					containerVerseNode.lastCloneNode.appendChild(item);
 				}
 			} else if (item.getNodeType() == Node.ELEMENT_NODE && item.getNodeName() != null) {
-				if (item.getNodeName().equals("a")) {
+				if (isVerseNode(item)) {
 					containerVerseNode.lastVerseNode = (Element)item;
 					containerVerseNode.lastCloneNode = null;
+					containerVerseNode.counter = 0;
 					result = true;
 				} else {
 					if (item.getNodeName().equals("end_data")) {
 						return result;
 					}
-					result = fillHoles((Element)item, containerVerseNode);
+					result = hasInternalVerseElements((Element)item);
 					if (!result && containerVerseNode.lastVerseNode != null) {
-						if (containerVerseNode.lastCloneNode == null) {
-							containerVerseNode.lastCloneNode = containerVerseNode.lastVerseNode.cloneNode(false);
-							item.getParentNode().insertBefore(containerVerseNode.lastCloneNode, item);
-						} else {
+						if (addToNewVerseNode(item, containerVerseNode)) {
 							i--;
 						}
-						item.getParentNode().removeChild(item);
-						containerVerseNode.lastCloneNode.appendChild(item);
+					} else {						
+						result = fillHoles((Element)item, containerVerseNode);
 					}
 				}
 			}
 		}
+		return result;
+	}
+	
+	private boolean hasInternalVerseElements(Element rootIn) {
+		for (int i = 0; i < rootIn.getChildNodes().getLength(); i++) {
+			Node item = rootIn.getChildNodes().item(i);
+			if (item.getNodeType() == Node.ELEMENT_NODE && item.getNodeName() != null) {
+				if (isVerseNode(item)) {
+					return true;
+				} else {
+					if (item.getNodeName().equals("end_data")) {
+						return false;
+					}
+					if (hasInternalVerseElements((Element)item)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean isVerseNode(Node node) {
+		if (node != null && node.getNodeName().equals("a")) {
+			Node attr = node.getAttributes().getNamedItem("id");
+			if (attr != null && attr.getNodeValue() != null && attr.getNodeValue().startsWith("verse")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean addToNewVerseNode(Node item, ContainerVerseNode containerVerseNode) {
+		if (item.getNodeType() == Node.TEXT_NODE) {
+			String value = item.getNodeValue();
+			if (value != null && value.replaceAll("\n", "").replaceAll("\t", "").replaceAll("\r", "").trim().length() == 0) {
+				return false;
+			}
+		}
+		boolean result = false;
+		if (containerVerseNode.lastCloneNode != null && containerVerseNode.lastCloneNode.getParentNode() == item.getParentNode()) {
+			result = true;
+		} else {
+			containerVerseNode.lastCloneNode = containerVerseNode.lastVerseNode.cloneNode(false);
+			
+			Node attr = containerVerseNode.lastCloneNode.getAttributes().getNamedItem("id");
+			String orgName = attr.getNodeValue();
+			String newValue = attr.getNodeValue() + "_" + ++containerVerseNode.counter;
+			attr.setNodeValue(newValue);
+			attr = containerVerseNode.lastCloneNode.getAttributes().getNamedItem("name");
+			attr.setNodeValue(newValue);
+			attr = containerVerseNode.lastCloneNode.getAttributes().getNamedItem("onclick");
+			attr.setNodeValue(attr.getNodeValue().replaceAll("this", "document.getElementById('"+orgName+"')"));
+			
+			item.getParentNode().insertBefore(containerVerseNode.lastCloneNode, item);
+		}
+		item.getParentNode().removeChild(item);
+		containerVerseNode.lastCloneNode.appendChild(item.cloneNode(true));
 		return result;
 	}
 	

@@ -67,16 +67,15 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 	private ActionMode mMode;
 	
 	private boolean lastModeWasClicked;
-
-	private String currentText;
-
-	private String currentVerse;
+	
+	private List<SelectedVerse> selectedVerses;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		preferences = MyBiblePreferences.getInstance(this
 				.getApplicationContext());
+		selectedVerses = new ArrayList<ShowBookActivity.SelectedVerse>();
 		setContentView(R.layout.activity_show_book);
 		this.getWindow().addFlags(
 				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -353,33 +352,39 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 
 	@Override
 	public void setSelectedVerse(String verse, String text) {
-		currentText = text;
-		currentVerse = verse;
 		if (verse == null) {
+			selectedVerses.clear();
 			if (mMode != null) {
 				mMode.finish();
 				mMode = null;
 			}
 			return;
 		}
-		mMode = startActionMode(new FavoriteMarksActionMode(isCurrentMarked(),
-				MyBibleLocalServices.getInstance(getApplicationContext())
-						.getHighlighters()));
-		lastModeWasClicked = false;
-		int doneButtonId = Resources.getSystem().getIdentifier(
-				"action_mode_close_button", "id", "android");
-		View doneButton = findViewById(doneButtonId);
-		if (doneButton != null) {
-			doneButton.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					cleanSelection();
-				}
-			});
+		SelectedVerse verseData = new SelectedVerse();
+		verseData.text = text;
+		verseData.id = verse;
+		selectedVerses.add(verseData);
+		if (mMode == null) {			
+			mMode = startActionMode(new FavoriteMarksActionMode(isCurrentMarked(),
+					MyBibleLocalServices.getInstance(getApplicationContext())
+					.getHighlighters()));
+			lastModeWasClicked = false;
+			int doneButtonId = Resources.getSystem().getIdentifier(
+					"action_mode_close_button", "id", "android");
+			View doneButton = findViewById(doneButtonId);
+			if (doneButton != null) {
+				doneButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						cleanSelection();
+					}
+				});
+			}
 		}
 	}
 
 	private boolean isCurrentMarked() {
+		/* TODO
 		if (currentVerse != null) {
 			IMyBibleLocalServices instance = MyBibleLocalServices
 					.getInstance(getApplicationContext());
@@ -402,7 +407,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 
 				}
 			}
-		}
+		}*/
 		return false;
 	}
 
@@ -500,94 +505,106 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 	}
 
 	private void removeCurrentVerseMark() {
-		if (currentVerse != null) {
-			IMyBibleLocalServices myBibleLocalServices = MyBibleLocalServices
-					.getInstance(getApplicationContext());
-			BiblePosition biblePosition = pagerAdapter
-					.getBiblePositionFromIndex(mViewPager.getCurrentItem());
-			if (biblePosition != null && biblePosition.getBook() != null) {
-				myBibleLocalServices.deleteAllHighlighterVerse(biblePosition
-						.getBook().getBookNumber(), biblePosition.getChapter(),
-						currentVerse);
-				int position = mViewPager.getCurrentItem();
-				pagerAdapter.unMarkVerse(
-						pagerAdapter.getViewByPosition(mViewPager, position),
-						currentVerse);
-				Integer[] verseInformation = BibleUtilities
-						.getVerseInformation(currentVerse);
-				String verseNum = currentVerse.replaceAll("verse", "");
-				if (verseInformation != null && verseInformation.length > 0) {
-					verseNum = String.valueOf(verseInformation[0]);
-					if (verseInformation.length > 1 && verseInformation[1] > 0
-							&& verseInformation[1] != verseInformation[0]) {
-						verseNum += " - " + verseInformation[1];
+		if (selectedVerses.size() > 0) {
+			for (Iterator iterator = selectedVerses.iterator(); iterator.hasNext();) {
+				SelectedVerse selectedVerse = (SelectedVerse) iterator.next();
+				String currentVerse = selectedVerse.id;
+				IMyBibleLocalServices myBibleLocalServices = MyBibleLocalServices
+						.getInstance(getApplicationContext());
+				BiblePosition biblePosition = pagerAdapter
+						.getBiblePositionFromIndex(mViewPager.getCurrentItem());
+				if (biblePosition != null && biblePosition.getBook() != null) {
+					myBibleLocalServices.deleteAllHighlighterVerse(biblePosition
+							.getBook().getBookNumber(), biblePosition.getChapter(),
+							currentVerse);
+					int position = mViewPager.getCurrentItem();
+					pagerAdapter.unMarkVerse(
+							pagerAdapter.getViewByPosition(mViewPager, position),
+							currentVerse);
+					Integer[] verseInformation = BibleUtilities
+							.getVerseInformation(currentVerse);
+					String verseNum = currentVerse.replaceAll("verse", "");
+					if (verseInformation != null && verseInformation.length > 0) {
+						verseNum = String.valueOf(verseInformation[0]);
+						if (verseInformation.length > 1 && verseInformation[1] > 0
+								&& verseInformation[1] != verseInformation[0]) {
+							verseNum += " - " + verseInformation[1];
+						}
 					}
+					String message = getResources().getString(
+							R.string.message_verse_unmarked_favorite, verseNum);
+					Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 				}
-				String message = getResources().getString(
-						R.string.message_verse_unmarked_favorite, verseNum);
-				Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
 
 	private void setCurrentVerseMark(Highlighter highlighter) {
-		if (currentVerse != null) {
+		if (selectedVerses.size() > 0) {
+			boolean modified = false;
 			IMyBibleLocalServices myBibleLocalServices = MyBibleLocalServices
 					.getInstance(getApplicationContext());
 			if (highlighter != null) {
 				BiblePosition biblePosition = pagerAdapter
 						.getBiblePositionFromIndex(mViewPager.getCurrentItem());
 				if (biblePosition != null && biblePosition.getBook() != null) {
-					Integer[] verseInformation = BibleUtilities
-							.getVerseInformation(currentVerse);
-					if (verseInformation != null && verseInformation.length > 0) {
-						myBibleLocalServices.deleteAllHighlighterVerse(
-								biblePosition.getBook().getBookNumber(),
-								biblePosition.getChapter(), currentVerse);
-						HighlighterVerseMark mark = new HighlighterVerseMark();
-						mark.setConfig(highlighter);
-						mark.setBook(biblePosition.getBook().getBookNumber());
-						mark.setChapter(biblePosition.getChapter());
-						mark.setVerseMark(currentVerse);
-						mark.setVerseRangeLow(verseInformation[0]);
-						mark.setVerseRangeHigh(verseInformation.length > 1 ? verseInformation[1]
-								: verseInformation[0]);
-						if (currentText != null) {
-							String tempCurrentText = currentText.replaceAll(
-									"\\<sup>.*?</sup>", "");
-							tempCurrentText = tempCurrentText.replaceAll(
-									"\\<.*?>", "");
-							if (tempCurrentText.length() > 151) {
-								tempCurrentText = tempCurrentText.substring(0,
-										150) + "...";
+					for (Iterator iterator = selectedVerses.iterator(); iterator.hasNext();) {
+						SelectedVerse selectedVerse = (SelectedVerse) iterator.next();
+						String currentVerse = selectedVerse.id;
+						String currentText = selectedVerse.text;
+						Integer[] verseInformation = BibleUtilities
+								.getVerseInformation(currentVerse);
+						if (verseInformation != null && verseInformation.length > 0) {
+							myBibleLocalServices.deleteAllHighlighterVerse(
+									biblePosition.getBook().getBookNumber(),
+									biblePosition.getChapter(), currentVerse);
+							HighlighterVerseMark mark = new HighlighterVerseMark();
+							mark.setConfig(highlighter);
+							mark.setBook(biblePosition.getBook().getBookNumber());
+							mark.setChapter(biblePosition.getChapter());
+							mark.setVerseMark(currentVerse);
+							mark.setVerseRangeLow(verseInformation[0]);
+							mark.setVerseRangeHigh(verseInformation.length > 1 ? verseInformation[1]
+									: verseInformation[0]);
+							if (currentText != null) {
+								String tempCurrentText = currentText.replaceAll(
+										"\\<sup>.*?</sup>", "");
+								tempCurrentText = tempCurrentText.replaceAll(
+										"\\<.*?>", "");
+								if (tempCurrentText.length() > 151) {
+									tempCurrentText = tempCurrentText.substring(0,
+											150) + "...";
+								}
+								mark.setExtract(tempCurrentText);
+							} else {
+								mark.setExtract("");
 							}
-							mark.setExtract(tempCurrentText);
-						} else {
-							mark.setExtract("");
-						}
-						mark.setNote("");
-						boolean inserted = myBibleLocalServices
-								.insertHighlighterVerse(mark);
-						if (inserted) {
-							int position = mViewPager.getCurrentItem();
-							pagerAdapter.markVerse(pagerAdapter
-									.getViewByPosition(mViewPager, position),
-									highlighter, currentVerse);
-							String verseNum = String.valueOf(mark
-									.getVerseRangeLow());
-							if (mark.getVerseRangeHigh() > 0
-									&& mark.getVerseRangeHigh() != mark
-											.getVerseRangeLow()) {
-								verseNum += " - " + mark.getVerseRangeHigh();
+							mark.setNote("");
+							boolean inserted = myBibleLocalServices
+									.insertHighlighterVerse(mark);
+							if (inserted) {
+								int position = mViewPager.getCurrentItem();
+								pagerAdapter.markVerse(pagerAdapter
+										.getViewByPosition(mViewPager, position),
+										highlighter, currentVerse);
+								String verseNum = String.valueOf(mark
+										.getVerseRangeLow());
+								if (mark.getVerseRangeHigh() > 0
+										&& mark.getVerseRangeHigh() != mark
+										.getVerseRangeLow()) {
+									verseNum += " - " + mark.getVerseRangeHigh();
+								}
+								modified = true;
 							}
-							String message = getResources().getString(
-									R.string.message_verse_marked_favorite,
-									verseNum, highlighter.getName());
-							Toast.makeText(this, message, Toast.LENGTH_SHORT)
-									.show();
 						}
 					}
 				}
+			}
+			if (modified) {
+				String message = getResources().getString(
+						R.string.message_verse_marked_favorite,
+						"", highlighter.getName());
+				Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -693,6 +710,11 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 			}
 		}
 
+	}
+	
+	private class SelectedVerse {
+		String id;
+		String text;
 	}
 
 }
