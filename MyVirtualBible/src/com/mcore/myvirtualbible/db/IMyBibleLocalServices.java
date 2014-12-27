@@ -67,5 +67,11 @@ public interface IMyBibleLocalServices {
 	public boolean modifyHighlighterVerse(HighlighterVerseMark highlighterMark);
 
 	public boolean insertHighlighterVerse(HighlighterVerseMark highlighterMark);
+	
+	public boolean hasToMigrateDatabase();
+	
+	public int migrateDatabase();
+	
+	public void cleanTranslationDatabase();
 
 }

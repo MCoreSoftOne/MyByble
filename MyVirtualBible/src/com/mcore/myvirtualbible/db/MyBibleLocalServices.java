@@ -489,6 +489,36 @@ public class MyBibleLocalServices implements IMyBibleLocalServices {
 		}
 	}
 	
+	
+	@Override
+	public boolean hasToMigrateDatabase() {
+		dbConnector.open();
+		try {
+			return dbConnector.hasToMigrateDatabase();
+		} finally {
+			dbConnector.close();
+		}
+	}
+	
+	@Override
+	public int migrateDatabase() {
+		dbConnector.open();
+		try {
+			return dbConnector.migrateDatabase();
+		} finally {
+			dbConnector.close();
+		}
+	}
+	
+	@Override
+	public void cleanTranslationDatabase() {
+		dbConnector.open();
+		try {
+			dbConnector.cleanTranslationDatabase();
+		} finally {
+			dbConnector.close();
+		}		
+	}
 
 	private static class LocalServiceInvocationHandler implements
 			InvocationHandler {
@@ -510,7 +540,7 @@ public class MyBibleLocalServices implements IMyBibleLocalServices {
 				return null;
 			}
 		}
-
 	}
+
 
 }

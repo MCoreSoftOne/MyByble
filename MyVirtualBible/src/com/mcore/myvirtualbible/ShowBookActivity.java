@@ -551,8 +551,6 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 					pagerAdapter.unMarkVerse(
 							pagerAdapter.getViewByPosition(mViewPager, position),
 							currentVerse);
-					Integer[] verseInformation = BibleUtilities
-							.getVerseInformation(currentVerse);
 					modified = true;
 				}
 			}

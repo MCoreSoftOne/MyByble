@@ -33,5 +33,10 @@ public class MyBibleConstants {
 	public static final String DOWNLOAD_NAME = "NAME";
 	public static final String DOWNLOAD_LANG = "LANG";
 	
+	public static final int MIGRATION_NO_ERROR = 0;
+	public static final int MIGRATION_UNKNOWN_ERROR = 1;
+	public static final int MIGRATION_SQL_ERROR = 100;
+	public static final int MIGRATION_INSUFFICIENT_SPACE_ERROR = 200;
+	
 
 }

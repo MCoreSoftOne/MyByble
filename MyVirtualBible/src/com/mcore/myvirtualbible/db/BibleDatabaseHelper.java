@@ -31,7 +31,7 @@ public class BibleDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE downloable_versions (id TEXT, name TEXT, version TEXT, language TEXT, md5 TEXT);");		
         db.execSQL("CREATE TABLE bible_versions (id INTEGER PRIMARY KEY autoincrement, name TEXT, abrev TEXT, revision TEXT, language TEXT, copyright TEXT, encryption_method TEXT, loaded INTEGER DEFAULT 0, othersprops TEXT);");		
         db.execSQL("CREATE TABLE books (id INTEGER PRIMARY KEY autoincrement, book_number NUMERIC, name TEXT, aliases TEXT, chapters_count NUMERIC, bible_version NUMERIC);");		
-        db.execSQL("CREATE TABLE chapters (id INTEGER PRIMARY KEY autoincrement, number NUMERIC, chapter TEXT, book NUMERIC);");
+        db.execSQL("CREATE VIRTUAL TABLE chapters using fts3 (number NUMERIC, chapter TEXT, book NUMERIC);");
         db.execSQL("CREATE TABLE repo_versions (id TEXT, name TEXT, version TEXT, language TEXT, md5 TEXT);");
 	}
 
@@ -56,18 +56,24 @@ public class BibleDatabaseHelper extends SQLiteOpenHelper {
 				// No pasa nada
 			}
 		}
+		if (oldVersion < 3) {
+			db.execSQL("ALTER TABLE chapters RENAME TO chapters_old;");
+			db.execSQL("CREATE VIRTUAL TABLE chapters using fts3 (number NUMERIC, chapter TEXT, book NUMERIC);");
+		}
 	}
 	
 	private void adjustTableVersion1(SQLiteDatabase db) {
-		db.execSQL("UPDATE bible_versions SET language='es', copyright='Public Domain.\\nTraducciï¿½n realizada por las Sociedades Bï¿½blicas Unidas.', encryption_method='NONE', loaded=1, othersprops='';");
+		db.execSQL("UPDATE bible_versions SET language='es', copyright='Public Domain.\\nTraducción realizada por las Sociedades Bíblicas Unidas.', encryption_method='NONE', loaded=1, othersprops='';");
 	}
 	
-	private void recreateAllDataBase(SQLiteDatabase db) {
+	public void recreateAllDataBase(SQLiteDatabase db) {
 		Log.d(BIBLE_DB_TAG, "RECREATING DATABASE ");
 		db.execSQL("DROP TABLE IF EXISTS bible_versions");
 		db.execSQL("DROP TABLE IF EXISTS books");
 		db.execSQL("DROP TABLE IF EXISTS chapters");
+		db.execSQL("DROP TABLE IF EXISTS chapters_old");
 		db.execSQL("DROP TABLE IF EXISTS repo_versions");
+		db.execSQL("DROP TABLE IF EXISTS downloable_versions");
 		createTables(db);
 	}
 

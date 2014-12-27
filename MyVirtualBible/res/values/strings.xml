@@ -64,5 +64,9 @@
     <string name="action_filter_order">Filter/Order</string>
     <string name="no_items_on_verse_list">There are no items to show</string>
     <string name="delete_verse_from_list">Delete</string>
+    
+    <string name="wait_default_message">Please wait...</string>
+    <string name="wait_default_title">My Bible</string>
+    <string name="button_retry_text">Retry</string>
 
 </resources>

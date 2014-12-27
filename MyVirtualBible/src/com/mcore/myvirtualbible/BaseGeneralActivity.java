@@ -1,5 +1,6 @@
 package com.mcore.myvirtualbible;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -10,6 +11,8 @@ import com.google.android.gms.analytics.Tracker;
 public abstract class BaseGeneralActivity extends SherlockActivity {
 	
 	private Tracker gatracker;
+	
+	ProgressDialog waitDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,18 @@ public abstract class BaseGeneralActivity extends SherlockActivity {
 	public void sendEvent(String category, String action, String param, String value) {
 		if (gatracker != null) {			
 			gatracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).set(param, value).build());
+		}
+	}
+	
+	protected void initWait(int title, int message) {
+		stopWait();
+		waitDialog = ProgressDialog.show(this, getText(title==0? R.string.wait_default_title:title), getText(message==0? R.string.wait_default_message:message), true);
+	}
+	
+	protected void stopWait() {
+		if (waitDialog != null) {
+			waitDialog.dismiss();
+			waitDialog = null;
 		}
 	}
 

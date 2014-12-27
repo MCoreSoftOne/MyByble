@@ -14,6 +14,7 @@ import com.mcore.mybible.common.dto.TranslationListDTO;
 import com.mcore.myvirtualbible.model.BibleTranslation;
 import com.mcore.myvirtualbible.model.Book;
 import com.mcore.myvirtualbible.model.Chapter;
+import com.mcore.myvirtualbible.util.MyBibleConstants;
 
 public class BibleDatabaseConnector {
 
@@ -21,7 +22,7 @@ public class BibleDatabaseConnector {
 	private SQLiteDatabase database;
 	private BibleDatabaseHelper dbOpenHelper;
 	
-	private static final int CURRENT_BIBLE_DATABASE_VERSION = 2;
+	private static final int CURRENT_BIBLE_DATABASE_VERSION = 3;
 
 	public BibleDatabaseConnector(Context context, boolean external) {
 		dbOpenHelper = new BibleDatabaseHelper(context, DB_NAME, null, CURRENT_BIBLE_DATABASE_VERSION, external);
@@ -191,7 +192,7 @@ public class BibleDatabaseConnector {
 	}
 
 	public String getBookChapterText(int bookId, int chapterNumber) {
-		Cursor tCursor = database.query("chapters", new String[] { "id", "number",
+		Cursor tCursor = database.query("chapters", new String[] { "rowid", "number",
 				"book", "chapter" }, "book="+bookId+" and number="+chapterNumber, null, null, null, "number");
 		tCursor.moveToFirst();
 		String result = "";
@@ -271,6 +272,32 @@ public class BibleDatabaseConnector {
 			}
 		}
 		return result;		
+	}
+	
+	public boolean hasToMigrateDatabase() {
+		Cursor tCursor = database.query("sqlite_master", new String[] { "name"}, "type=? AND name=?", new String[] {"table", "chapters_old"}, null, null, null);
+		try {
+			return tCursor.moveToFirst();			
+		} finally {
+			tCursor.close();
+		}
+	}
+	
+	public int migrateDatabase() {
+		try {
+			database.execSQL("DELETE FROM chapters;");
+			database.execSQL("INSERT INTO chapters (number, chapter, book) SELECT number, chapter, book FROM chapters_old;");
+			database.execSQL("DROP TABLE IF EXISTS chapters_old;");
+			return MyBibleConstants.MIGRATION_NO_ERROR;
+		} catch (SQLException e) {
+			return MyBibleConstants.MIGRATION_SQL_ERROR;
+		} catch (Exception e) {
+			return MyBibleConstants.MIGRATION_UNKNOWN_ERROR;
+		}
+	}	
+	
+	public void cleanTranslationDatabase() {
+		dbOpenHelper.recreateAllDataBase(database);
 	}
 
 	public SQLiteDatabase getDatabase() {
