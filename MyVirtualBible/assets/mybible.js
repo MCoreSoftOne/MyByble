@@ -92,3 +92,22 @@ function cleanSelection() {
 	}
 	memdata = [];
 }
+function jumpToVerse(verse){
+	var url = location.href;
+	location.href = "#"+verse;
+	_animateJump(verse);
+}
+function _animateJump(id) {
+	var element = document.getElementById(id);
+	if (element) {
+		var fe = function(e){
+			console.log("log at end of monkey animation");
+			element.removeEventListener(fe);
+			element.style.backgroundColor = null;
+			element.style.transition = null;
+		}
+		element.style.backgroundColor = '#D700E6';
+		element.style.transition  = "background-color 500ms linear";
+		element.addEventListener("transitionend",fe,false);
+	}	
+}

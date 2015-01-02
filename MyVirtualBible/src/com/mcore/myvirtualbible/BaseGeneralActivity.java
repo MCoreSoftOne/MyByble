@@ -3,12 +3,12 @@ package com.mcore.myvirtualbible;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-public abstract class BaseGeneralActivity extends SherlockActivity {
+public abstract class BaseGeneralActivity extends SherlockFragmentActivity {
 	
 	private Tracker gatracker;
 	

@@ -1,7 +1,10 @@
 package com.mcore.myvirtualbible.model;
 
-public class BiblePosition {
-	
+import java.io.Serializable;
+
+public class BiblePosition implements Serializable {
+
+	private static final long serialVersionUID = -6013263857948361969L;
 	private Book book;
 	private int chapter;
 	private int verse;

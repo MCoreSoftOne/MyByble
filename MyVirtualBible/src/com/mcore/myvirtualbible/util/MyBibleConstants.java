@@ -2,6 +2,8 @@ package com.mcore.myvirtualbible.util;
 
 public class MyBibleConstants {
 	
+	public static String APP_TAG = "MY_BIBLE";
+	
 	public static final boolean MYBIBLE_DEVELOPER_MODE_FULL_DOWNLOAD = false;
 	
 	public static final boolean MYBIBLE_DEVELOPER_MODE_SAVE_DEBUG_DATA = false;
@@ -34,6 +36,15 @@ public class MyBibleConstants {
 	public static final String ACTION_UNSET_VERSE_MARK = "MYBIBLE.USE.UNSET_VERSE_MARK";
 	public static final String DOWNLOAD_NAME = "NAME";
 	public static final String DOWNLOAD_LANG = "LANG";
+	
+	public static final String MESSAGE_ACTION_CLEAR_ALL = "MYBIBLE.MESSAGE.CLEARALL";
+	public static final String MESSAGE_ACTION_MARK_VERSE = "MYBIBLE.MESSAGE.MARKVERSE";
+	public static final String MESSAGE_ACTION_UNMARK_VERSE = "MYBIBLE.MESSAGE.UNMARKVERSE";
+	public static final String MESSAGE_ACTION_JUMP_TO_VERSE = "MYBIBLE.MESSAGE.JUMPTO";
+	public static final String MESSAGE_PARAM_VERSE = "verse";
+	public static final String MESSAGE_PARAM_HTMLCLASSNAME = "classname";
+	public static final String MESSAGE_PARAM_PAGE_POSITION = "page.position";
+
 	
 	public static final int MIGRATION_NO_ERROR = 0;
 	public static final int MIGRATION_UNKNOWN_ERROR = 1;

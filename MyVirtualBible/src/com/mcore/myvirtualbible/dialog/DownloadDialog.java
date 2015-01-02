@@ -53,7 +53,6 @@ import com.mcore.myvirtualbible.util.MyBiblePreferences;
 
 public class DownloadDialog extends Dialog {
 
-	// private static final String MYBIBLE_TAG = "MYBIBLE_TAG";
 	private TranslationListDTO translations;
 	private TranslationListDTO updatePending;
 	private boolean working;
@@ -102,13 +101,7 @@ public class DownloadDialog extends Dialog {
 						.getSelectedItem();
 				if (selectedItem != null) {
 					setLoadingMode(true);
-					if (CommonConstants.MYBIBLE_DEVELOPER_MODE && MyBibleConstants.MYBIBLE_DEVELOPER_MODE_FULL_DOWNLOAD) {
-						new DownloadAndLoadTranslationTask()
-						.execute(translations.getTranslations());
-					} else {						
-						new DownloadAndLoadTranslationTask()
-						.execute(new TranslationDTO[] { selectedItem });
-					}
+					downloadTranslation(selectedItem);
 				}
 			}
 		});
@@ -166,6 +159,17 @@ public class DownloadDialog extends Dialog {
 			chkUseExternalStorage.setVisibility(View.GONE);
 		}
 		onTranlationChange();
+	}
+	
+	@SuppressWarnings("unused")
+	private void downloadTranslation(TranslationDTO selectedItem) {
+		if (CommonConstants.MYBIBLE_DEVELOPER_MODE && MyBibleConstants.MYBIBLE_DEVELOPER_MODE_FULL_DOWNLOAD) {
+			new DownloadAndLoadTranslationTask()
+			.execute(translations.getTranslations());
+		} else {						
+			new DownloadAndLoadTranslationTask()
+			.execute(new TranslationDTO[] { selectedItem });
+		}
 	}
 
 	protected void onTranlationChange() {

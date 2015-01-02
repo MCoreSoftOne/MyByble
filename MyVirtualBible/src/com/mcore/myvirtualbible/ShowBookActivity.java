@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
@@ -34,7 +35,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.mcore.mybible.common.dto.TranslationDTO;
 import com.mcore.mybible.common.utilities.CommonConstants;
-import com.mcore.myvirtualbible.adapters.ViewPagerAdapter;
+import com.mcore.myvirtualbible.adapters.ChapterSlidePagerAdapter;
 import com.mcore.myvirtualbible.db.IMyBibleLocalServices;
 import com.mcore.myvirtualbible.db.MyBibleLocalServices;
 import com.mcore.myvirtualbible.dialog.DownloadDialog;
@@ -46,6 +47,7 @@ import com.mcore.myvirtualbible.model.Highlighter;
 import com.mcore.myvirtualbible.model.HighlighterVerse;
 import com.mcore.myvirtualbible.model.HighlighterVerseMark;
 import com.mcore.myvirtualbible.util.BibleUtilities;
+import com.mcore.myvirtualbible.util.MyBibleConstants;
 import com.mcore.myvirtualbible.util.MyBiblePreferences;
 
 public class ShowBookActivity extends BaseGeneralActivity implements
@@ -63,7 +65,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 	
 	private List<Book> books;
 	
-	private ViewPagerAdapter pagerAdapter;
+	private ChapterSlidePagerAdapter pagerAdapter;
 	
 	private BibleTranslation currentTranslation;
 
@@ -90,8 +92,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 		MyBibleLocalServices.getInstance(getApplicationContext());
 
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
-		pagerAdapter = new ViewPagerAdapter(this, currentTranslation, books,
-				preferences, this);
+		pagerAdapter = new ChapterSlidePagerAdapter(getSupportFragmentManager(), books);
 		mViewPager.setAdapter(pagerAdapter);
 
 		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
@@ -117,11 +118,21 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 	}
 
 	private void gotoText(Book book, int chapter, int verse) {
+		gotoText(book, chapter, "verse" + verse);
+	}
+	
+	private void gotoText(Book book, int chapter, final String verseMark) {
 		if (book != null) {
 			int index = pagerAdapter
-					.getPositionFromBiblePosition(new BiblePosition(book,
-							chapter, verse));
+					.getPositionFromBiblePosition(book.getId(), chapter);
 			mViewPager.setCurrentItem(index);
+			final Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+			  @Override
+			  public void run() {
+				  message_jumpToVerse(verseMark);
+			  }
+			}, 100);
 		}
 	}
 
@@ -171,13 +182,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 	}
 
 	private void cleanSelection(boolean finishing) {
-		int position = mViewPager.getCurrentItem();
-		pagerAdapter.cleanSelection(pagerAdapter.getViewByPosition(mViewPager,
-				position - 1));
-		pagerAdapter.cleanSelection(pagerAdapter.getViewByPosition(mViewPager,
-				position));
-		pagerAdapter.cleanSelection(pagerAdapter.getViewByPosition(mViewPager,
-				position + 1));
+		message_cleanSelection();
 		if (finishing && mMode != null) {
 			mMode.finish();
 		}
@@ -227,7 +232,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 	
 	private void gotoVerseMark(HighlighterVerseMark mark) {
 		if (mark != null) {			
-			gotoText(getBookById(mark.getBook()), mark.getChapter(), mark.getVerseRangeLow());
+			gotoText(getBookById(mark.getBook()), mark.getChapter(), mark.getVerseMark());
 		}
 	}
 
@@ -247,7 +252,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 		getSelectedBibleVersion();
 		refreshBookList();
 		if (pagerAdapter != null) {
-			pagerAdapter.changeTranslation(currentTranslation, books);
+			pagerAdapter.changeTranslation(books);
 			pagerAdapter.notifyDataSetChanged();
 		}
 		updateChapterPosition();
@@ -535,10 +540,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 					myBibleLocalServices.deleteAllHighlighterVerse(biblePosition
 							.getBook().getBookNumber(), biblePosition.getChapter(),
 							currentVerse);
-					int position = mViewPager.getCurrentItem();
-					pagerAdapter.unMarkVerse(
-							pagerAdapter.getViewByPosition(mViewPager, position),
-							currentVerse);
+					message_unMarkVerse(currentVerse);
 					modified = true;
 				}
 			}
@@ -594,10 +596,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 							boolean inserted = myBibleLocalServices
 									.insertHighlighterVerse(mark);
 							if (inserted) {
-								int position = mViewPager.getCurrentItem();
-								pagerAdapter.markVerse(pagerAdapter
-										.getViewByPosition(mViewPager, position),
-										highlighter, currentVerse);
+								message_markVerse(highlighter.getHighlightClassName(), currentVerse);
 								modified = true;
 							}
 						}
@@ -610,6 +609,42 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 						"", highlighter.getName());
 				Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 			}
+		}
+	}
+	
+	protected void message_jumpToVerse(String verse) {
+		Intent intent = new Intent(MyBibleConstants.MESSAGE_ACTION_JUMP_TO_VERSE);
+		addIntentPosition(intent);
+		intent.putExtra(MyBibleConstants.MESSAGE_PARAM_VERSE, verse);
+		sendBroadcast(intent);
+	}
+
+	protected void message_unMarkVerse(String verse) {
+		Intent intent = new Intent(MyBibleConstants.MESSAGE_ACTION_UNMARK_VERSE);
+		addIntentPosition(intent);
+		intent.putExtra(MyBibleConstants.MESSAGE_PARAM_VERSE, verse);
+		sendBroadcast(intent);
+	}
+
+	protected void message_markVerse(String highlighterclass, String verse) {
+		Intent intent = new Intent(MyBibleConstants.MESSAGE_ACTION_MARK_VERSE);
+		addIntentPosition(intent);
+		intent.putExtra(MyBibleConstants.MESSAGE_PARAM_VERSE, verse);
+		intent.putExtra(MyBibleConstants.MESSAGE_PARAM_HTMLCLASSNAME, highlighterclass);
+		sendBroadcast(intent);
+	}
+
+	protected void message_cleanSelection() {
+		Intent intent = new Intent(MyBibleConstants.MESSAGE_ACTION_CLEAR_ALL);
+		addIntentPosition(intent);
+		sendBroadcast(intent);
+	}
+	
+	private void addIntentPosition(Intent intent) {
+		int position = mViewPager.getCurrentItem();
+		BiblePosition biblePositionFromIndex = pagerAdapter.getBiblePositionFromIndex(position);
+		if (biblePositionFromIndex != null && biblePositionFromIndex.getBook() != null) {
+			intent.putExtra(MyBibleConstants.MESSAGE_PARAM_PAGE_POSITION, new Integer[] {biblePositionFromIndex.getBook().getId(), biblePositionFromIndex.getChapter()});
 		}
 	}
 
