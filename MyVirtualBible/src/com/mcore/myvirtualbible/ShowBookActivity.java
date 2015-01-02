@@ -116,18 +116,6 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 		updateChapterPosition();
 	}
 
-	@Override
-	protected void onPause() {
-		/* No se aplica en esta version
-		if (preferences != null && pagerAdapter != null && mViewPager != null) {
-			int position = mViewPager.getCurrentItem();
-			preferences.setLastScrollPosition(
-					pagerAdapter.getScrollPosByPosition(mViewPager, position),
-					position);
-		}*/
-		super.onPause();
-	}
-
 	private void gotoText(Book book, int chapter, int verse) {
 		if (book != null) {
 			int index = pagerAdapter

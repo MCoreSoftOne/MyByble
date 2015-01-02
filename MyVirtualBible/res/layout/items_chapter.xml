@@ -1,23 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-    <ScrollView
-        android:id="@+id/scrollWebContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <WebView
+        android:id="@+id/text_chapter"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" >
-
-        <com.mcore.myvirtualbible.adapters.MyWebView
-            android:id="@+id/text_chapter"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="!" />
-
-    </ScrollView>
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>

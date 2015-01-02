@@ -4,6 +4,8 @@ public class MyBibleConstants {
 	
 	public static final boolean MYBIBLE_DEVELOPER_MODE_FULL_DOWNLOAD = false;
 	
+	public static final boolean MYBIBLE_DEVELOPER_MODE_SAVE_DEBUG_DATA = false;
+	
 	public static final String EXTERNAL_DB_DIR = "/mybible/";
 	
 	public static final String PREF_LAST_BIBLE_POSITION = "lastPosition";

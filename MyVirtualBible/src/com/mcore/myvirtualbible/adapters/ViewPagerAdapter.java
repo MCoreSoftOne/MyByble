@@ -35,6 +35,7 @@ import com.mcore.myvirtualbible.model.Book;
 import com.mcore.myvirtualbible.model.Highlighter;
 import com.mcore.myvirtualbible.model.HighlighterVerse;
 import com.mcore.myvirtualbible.util.BibleHtmlTransform;
+import com.mcore.myvirtualbible.util.MyBibleConstants;
 import com.mcore.myvirtualbible.util.MyBiblePreferences;
 
 /**
@@ -168,17 +169,6 @@ public class ViewPagerAdapter extends PagerAdapter {
 		return null;
 	}
 	
-	public int getScrollPosByPosition(ViewPager pager, int position) {
-		View view = getViewByPosition(pager, position);
-		View scroll = view.findViewById(R.id.scrollWebContent);
-		if (scroll != null) {
-			return scroll.getScrollY();
-		}
-		return 0;
-	}
-	
-	
-	
 	//JSMETHODS
 	
 	public void unMarkVerse(View row, String verse) {
@@ -264,8 +254,9 @@ public class ViewPagerAdapter extends PagerAdapter {
 		saveToDeveloperFile(biblePosition.getBook().getName() + "_" + biblePosition.getChapter() + ".html", toHTML);
 	}
 	
+	@SuppressWarnings("unused")
 	private void saveToDeveloperFile(String fileName, String fileContent) {
-		if (CommonConstants.MYBIBLE_DEVELOPER_MODE) {			
+		if (MyBibleConstants.MYBIBLE_DEVELOPER_MODE_SAVE_DEBUG_DATA && CommonConstants.MYBIBLE_DEVELOPER_MODE) {			
 			try {
 				File myFile = new File(Environment.getExternalStorageDirectory().getPath() + "/mybible/mybbl_" + fileName);
 				myFile.createNewFile();
