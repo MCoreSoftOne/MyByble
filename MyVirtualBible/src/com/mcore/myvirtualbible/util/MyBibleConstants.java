@@ -30,6 +30,7 @@ public class MyBibleConstants {
 	public static final String ACTION_RESET = "MYBIBLE.PREF.RESET";
 	public static final String ACTION_USE_TRANS = "MYBIBLE.USE.USE_TRANS";
 	public static final String ACTION_DEL_TRANS = "MYBIBLE.USE.DEL_TRANS";
+	public static final String ACTION_GOTO = "MYBIBLE.USE.GOTO";
 	public static final String ACTION_SEARCH = "MYBIBLE.USE.SEARCH";
 	public static final String ACTION_GOTO_VERSE = "MYBIBLE.USE.GOTO_VERSE";
 	public static final String ACTION_SET_VERSE_MARK = "MYBIBLE.USE.SET_VERSE_MARK";

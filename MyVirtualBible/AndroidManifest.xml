@@ -34,6 +34,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.mcore.myvirtualbible.SearchVerseActivity"
+            android:label="@string/action_search" >
+        </activity>
+        <activity
             android:name="com.mcore.myvirtualbible.PreferenceActivity"
             android:label="@string/title_activity_preference"
             android:screenOrientation="portrait" >

@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Ma Bible</string>
+    <string name="action_goto">Ir a...</string>
     <string name="action_search">Rechercher</string>
     <string name="title_activity_show_book">Livre</string>
     <string name="empty_text"></string>

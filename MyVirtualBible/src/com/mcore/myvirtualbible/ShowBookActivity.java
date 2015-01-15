@@ -1,5 +1,6 @@
 package com.mcore.myvirtualbible;
 
+import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_GOTO;
 import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_GOTO_VERSE;
 import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_SEARCH;
 import static com.mcore.myvirtualbible.util.MyBibleConstants.ACTION_SET_VERSE_MARK;
@@ -56,6 +57,8 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 	private static final int PREF_REQUEST_CODE = 10001;
 	
 	private static final int VERSELIST_REQUEST_CODE = 10002;
+	
+	private static final int SEARCH_REQUEST_CODE = 10003;
 
 	private static final int action_refresh = 10001;
 	
@@ -116,23 +119,21 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 		mViewPager.setCurrentItem(position);
 		updateChapterPosition();
 	}
-
-	private void gotoText(Book book, int chapter, int verse) {
-		gotoText(book, chapter, "verse" + verse);
-	}
 	
 	private void gotoText(Book book, int chapter, final String verseMark) {
 		if (book != null) {
 			int index = pagerAdapter
 					.getPositionFromBiblePosition(book.getId(), chapter);
 			mViewPager.setCurrentItem(index);
-			final Handler handler = new Handler();
-			handler.postDelayed(new Runnable() {
-			  @Override
-			  public void run() {
-				  message_jumpToVerse(verseMark);
-			  }
-			}, 100);
+			if (verseMark != null) {				
+				final Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						message_jumpToVerse(verseMark);
+					}
+				}, 100);
+			}
 		}
 	}
 
@@ -312,10 +313,14 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 			previousPage();
 			return true;
 		case android.R.id.home:
-		case R.id.action_search:
+		case R.id.action_goto:
 			openBookChapterDialog();
-			sendEvent(CATEGORY_USES, ACTION_SEARCH);
+			sendEvent(CATEGORY_USES, ACTION_GOTO);
 			return true;
+		case R.id.action_search:
+			openSearchView();
+			sendEvent(CATEGORY_USES, ACTION_SEARCH);
+			return true;			
 		case R.id.action_setting:
 			Intent intent = new Intent(this, PreferenceActivity.class);
 			startActivityForResult(intent, PREF_REQUEST_CODE);
@@ -466,8 +471,7 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 		final BookArrayAdapter bookAdapter = new BookArrayAdapter(this,
 				android.R.layout.simple_list_item_1, books);
 		bookSpinner.setAdapter(bookAdapter);
-		bookSpinner
-				.setOnItemSelectedListener(new IcsAdapterView.OnItemSelectedListener() {
+		bookSpinner.setOnItemSelectedListener(new IcsAdapterView.OnItemSelectedListener() {
 					@Override
 					public void onItemSelected(IcsAdapterView<?> parent,
 							View view, int position, long id) {
@@ -490,11 +494,16 @@ public class ShowBookActivity extends BaseGeneralActivity implements
 			@Override
 			public void onClick(View v) {
 				gotoText((Book) bookSpinner.getSelectedItem(), Integer
-						.parseInt((String) chapterSpinner.getSelectedItem()), 1);
+						.parseInt((String) chapterSpinner.getSelectedItem()), null);
 				dialog.dismiss();
 			}
 		});
 		dialog.show();
+	}
+	
+	private void openSearchView() {
+		Intent intent = new Intent(this, SearchVerseActivity.class);
+		startActivityForResult(intent, SEARCH_REQUEST_CODE);
 	}
 
 	private void fillDialogChapterSpinner(IcsSpinner chapterSpinner, Book book) {

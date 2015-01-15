@@ -88,6 +88,11 @@ public class ChapterSlidePagerAdapter extends FragmentStatePagerAdapter {
 		return result;
 	}
 	
+	@Override
+	public int getItemPosition(Object object) {
+	    return POSITION_NONE;
+	}
+	
 	public void changeTranslation(List<Book> books) {
 		this.books = books;
 	}

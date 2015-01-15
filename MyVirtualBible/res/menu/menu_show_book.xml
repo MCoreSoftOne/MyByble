@@ -13,10 +13,15 @@
         android:title="@string/action_next">
     </item>
     <item
+        android:id="@+id/action_goto"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_goto" android:icon="@android:drawable/ic_menu_search">
+    </item>
+    <item
         android:id="@+id/action_search"
         android:showAsAction="ifRoom"
         android:title="@string/action_search" android:icon="@android:drawable/ic_menu_search">
-    </item>
+    </item>    
      <item
         android:id="@+id/action_saved_verses"
         android:showAsAction="ifRoom"
