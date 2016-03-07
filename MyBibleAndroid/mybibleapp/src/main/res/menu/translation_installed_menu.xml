@@ -1,0 +1,5 @@
+
+    <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+        <item android:id="@+id/set_as_default" android:title="@string/menu_set_as_default"></item>
+        <item android:id="@+id/delete_traduction" android:title="@string/menu_delete_traduction"></item>
+    </menu>

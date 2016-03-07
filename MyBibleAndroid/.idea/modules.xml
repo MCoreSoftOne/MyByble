@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MyBibleAndroid.iml" filepath="$PROJECT_DIR$/MyBibleAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mybibleapp/mybibleapp.iml" filepath="$PROJECT_DIR$/mybibleapp/mybibleapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mybiblemanager/mybiblemanager.iml" filepath="$PROJECT_DIR$/mybiblemanager/mybiblemanager.iml" />
+    </modules>
+  </component>
+</project>
