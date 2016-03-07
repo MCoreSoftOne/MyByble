@@ -1,0 +1,15 @@
+body {
+	background-color: #ffffff;
+	margin-top: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+}
+.markbbl
+{
+background-color: #55E1FA;
+}
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;<
+}

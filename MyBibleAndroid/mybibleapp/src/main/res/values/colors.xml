@@ -1,0 +1,16 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="text_area_background">#ffffff</color>
+    <color name="text_shadow">#7F000000</color>
+    <color name="primary_background">#FFD8DFF0</color>
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="accent">#8BC34A</color>
+    <color name="primary_text">#FFFFFF</color>
+    <color name="secondary_text">#BBDEFB</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#B6B6B6</color>
+    
+</resources>

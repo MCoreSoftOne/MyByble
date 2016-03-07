@@ -1,0 +1,36 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_previous"
+        android:icon="@drawable/ic_back"
+        app:showAsAction="always"
+        android:title="@string/action_previous">
+    </item>
+    <item
+        android:id="@+id/action_next"
+        android:icon="@drawable/ic_forward"
+        app:showAsAction="always"
+        android:title="@string/action_next">
+    </item>
+    <item
+        android:id="@+id/action_goto"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_goto" android:icon="@android:drawable/ic_menu_search">
+    </item>
+    <item
+        android:id="@+id/action_search"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_search" android:icon="@android:drawable/ic_menu_search">
+    </item>    
+     <item
+        android:id="@+id/action_saved_verses"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_saved_verses" android:icon="@drawable/ic_menu_list">
+    </item>
+    <item
+        android:id="@+id/action_setting"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_setting" android:icon="@android:drawable/ic_menu_manage">
+    </item>
+
+</menu>

@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_add_translate"
+        android:icon="@drawable/translation_download"
+        app:showAsAction="always|withText"
+        android:title="@string/action_add_traslation">
+    </item>
+    <item
+        android:id="@+id/action_use_default"
+        app:showAsAction="never|withText"
+        android:title="@string/action_revert" android:icon="@android:drawable/ic_menu_revert">
+    </item>
+
+</menu>
