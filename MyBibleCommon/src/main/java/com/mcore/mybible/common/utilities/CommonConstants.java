@@ -3,7 +3,7 @@ package com.mcore.mybible.common.utilities;
 
 /**
  * Contiene constantes utilizadas en el servicio y en el cliente de la
- * aplicación.
+ * aplicacion.
  * 
  * @author Mario
  * 

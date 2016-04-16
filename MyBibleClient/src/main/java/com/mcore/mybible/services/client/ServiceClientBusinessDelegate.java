@@ -37,12 +37,12 @@ import com.mcore.mybible.common.utilities.CommonUtilities;
 import com.mcore.mybible.services.client.managers.CookieManager;
 
 /**
- * Implementa la comunicaci�n con el servicio de backend para la aplicaci�n.
+ * Implementa la comunicacion con el servicio de backend para la aplicacion.
  * Requiere un fichero de propiedades con nombre
  * Constante=CLIENT_BUNDLE_RESOURCE_NAME para extraer la informacion de
- * conexi�n.
+ * conexion.
  * 
- * NO es un singleton. S� se usa monousuario, se puede usar una �nica instancia
+ * NO es un singleton. Se se usa monousuario, se puede usar una unica instancia
  * usando getInstance().
  * 
  * @author Mario

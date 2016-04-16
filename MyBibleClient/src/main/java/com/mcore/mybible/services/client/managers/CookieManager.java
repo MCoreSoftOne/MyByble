@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * Mantiene la información de conexión HTTP a traves de cookies. Usada
- * principalmente para mantener la sesión de un usuario. Extraida de foro en
+ * Mantiene la informacion de conexion HTTP a traves de cookies. Usada
+ * principalmente para mantener la sesion de un usuario. Extraida de foro en
  * internet y modificada.
  * 
  * @author Mario

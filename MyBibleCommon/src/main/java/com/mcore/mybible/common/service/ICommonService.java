@@ -12,7 +12,7 @@ import com.mcore.mybible.common.dto.StatusDTO;
 import com.mcore.mybible.common.dto.TranslationListDTO;
 
 /**
- * Interface necesaria de cliente para comunicación con el servicio backend.
+ * Interface necesaria de cliente para comunicacion con el servicio backend.
  * 
  * @author Mario
  * 
@@ -24,10 +24,10 @@ public interface ICommonService {
 	 * Realiza la autenticacion de un Usuario.
 	 * 
 	 * @param loginInfo
-	 *            Información y credenciales del usuario que inicia sesión.
-	 * @return Sí esta autorizado retorna un token de identificacion diferente
-	 *         de cero. Cero sí ha ocurrido un error. El POJO de retorna incluye
-	 *         información adicional del codigo error producido y detalles
+	 *            Informacion y credenciales del usuario que inicia sesion.
+	 * @return Se esta autorizado retorna un token de identificacion diferente
+	 *         de cero. Cero se ha ocurrido un error. El POJO de retorna incluye
+	 *         informacion adicional del codigo error producido y detalles
 	 *         adicionales.
 	 */
 	public LoginOutDTO login(LoginInDTO loginInfo);
@@ -40,13 +40,13 @@ public interface ICommonService {
 	
 	/**
 	 * Estableces los datos de un media en el Stream indicado. Tiene en cuenta
-	 * el tamaño solicitado.
+	 * el tamaï¿½o solicitado.
 	 * 
 	 * @param bibleId
-	 *            Identificador único de la traducción.
+	 *            Identificador unico de la traduccion.
 	 * @param dataOut
-	 *            Flujo de bytes donde quedará almacenado el media.
-	 * @return Información adicional del media.
+	 *            Flujo de bytes donde quedara almacenado el media.
+	 * @return Informacion adicional del media.
 	 */
 	public ResultInfoDTO getBibleData(String bibleId, OutputStream dataOut);
 	

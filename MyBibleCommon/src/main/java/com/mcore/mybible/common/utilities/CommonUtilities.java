@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 
 /**
- * Utilidades comunes de la aplicación.
+ * Utilidades comunes de la aplicacion.
  * @author Mario
  *
  */

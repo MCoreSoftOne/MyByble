@@ -1,0 +1,4 @@
+mklink /j %MYBIBLE_GIT_WORKSPACE%\MyBibleAndroid\mybibleapp\src\main\java\com\mcore\mybible\common %MYBIBLE_GIT_WORKSPACE%\MyBibleCommon\src\main\java\com\mcore\mybible\common
+mklink /j %MYBIBLE_GIT_WORKSPACE%\MyBibleAndroid\mybibleapp\src\main\java\com\mcore\mybible\services %MYBIBLE_GIT_WORKSPACE%\MyBibleClient\src\main\java\com\mcore\mybible\services
+mklink /j %MYBIBLE_GIT_WORKSPACE%\MyBibleAndroid\mybiblemanager\src\main\java\com\mcore\mybible\common %MYBIBLE_GIT_WORKSPACE%\MyBibleCommon\src\main\java\com\mcore\mybible\common
+mklink /j %MYBIBLE_GIT_WORKSPACE%\MyBibleAndroid\mybiblemanager\src\main\java\com\mcore\mybible\services %MYBIBLE_GIT_WORKSPACE%\MyBibleClient\src\main\java\com\mcore\mybible\services
